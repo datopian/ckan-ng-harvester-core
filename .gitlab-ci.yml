@@ -21,7 +21,7 @@ test:
   - merge_requests
 
 pages:
-  stage: master
+  stage: deploy
   script:
   - echo 'Hello GitLab CI'
   only:
