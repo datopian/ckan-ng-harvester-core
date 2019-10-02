@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
      name='ckan-harvester',
-     version='0.107',
+     version='0.108',
      license='MIT',
      author="Datopian",
      author_email="contact@datopian.com",
@@ -29,7 +29,7 @@ setuptools.setup(
         'lxml>=4.4.1'
      ],
      include_package_data=True,
-     packages=setuptools.find_packages(exclude=("tests",)),
+     packages=setuptools.find_packages(exclude=("tests", "tests_with_ckan")),
      keywords=['harvester', 'CKAN'],
      classifiers=[
          'Programming Language :: Python :: 3',
