@@ -14,3 +14,4 @@ test:
 
   only:
   - merge_requests
+  - pushes
