@@ -9,20 +9,8 @@ test:
     - echo 'Instaling reqs'
     - pip3 install -r requirements.txt
     - echo '***************************'
-    - echo 'path'
-    - pwd
-    - DEVHOME=$(pwd)
-    - echo '***************************'
     - echo 'Testing package'
-    - pwd
     - python -m pytest tests/
 
   only:
   - merge_requests
-
-pages:
-  stage: deploy
-  script:
-  - echo 'Hello GitLab CI'
-  only:
-  - master
