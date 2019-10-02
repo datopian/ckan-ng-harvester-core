@@ -1,0 +1,29 @@
+image: python:3.6
+
+test:
+  stage: test
+  script:
+    # - apt-get update -qy
+    # - apt-get install -y python3-pip
+    - echo '***************************'
+    - echo 'Instaling reqs'
+    - pip3 install -r requirements.txt
+    - echo '***************************'
+    - echo 'path'
+    - pwd
+
+    - DEVHOME=$(pwd)
+    - echo '***************************'
+    - echo 'Testing package'
+    - pwd
+    - python -m pytest tests/
+
+  only:
+  - merge_requests
+
+pages:
+  stage: master
+  script:
+  - echo 'Hello GitLab CI'
+  only:
+  - master
