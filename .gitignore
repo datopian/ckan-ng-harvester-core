@@ -1,0 +1,9 @@
+*.egg-info
+*.pyc
+*.pyo
+__pycache__
+build/
+dist/
+*.log
+local_settings.py
+

@@ -1,0 +1,57 @@
+<h1>Harvest report</h1>
+<h2>Source: {{ name }}</h2>
+
+<div>
+    <h3>Data JSON source</h3>
+    <p>Total Datasets: {{data.dataset|length}}</p>
+    <p>errors: {{ errors|length }}</p>
+    {% if errors|length > 0 %}
+    <ul> {% for ve in errors %}
+        <li>{{ ve }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+
+<div>
+    <h3>Final process</h3>
+    <p>Processed: {{results|length}} </p>
+</div>
+
+<div>
+    <p>Actions</p>
+    <ul> {% for action, values in actions.items() %}
+        <li>{{ action }}: {{ values.total }}. Succeed: {{ values.success }}, fails: {{ values.fails }}</li>
+        {% endfor %}
+    </ul>
+    <p>Errors: {{ action_errors|length }}</p>
+    {% if action_errors|length > 0 %}
+    <ul> {% for error in action_errors %}
+        <li>{{ error }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    <p>Warnings: {{ action_warnings|length }}</p>
+    {% if action_warnings|length > 0 %}
+    <ul> {% for warning in action_warnings %}
+        <li>{{ warning }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+</div>
+
+<div>
+    <p>Validation errors: {{ validation_errors|length }}</p>
+    {% if validation_errors|length > 0 %}
+    <ul> {% for ve in validation_errors %}
+        {% for title, errors in ve.items() %}
+        <li>{{ title }}</li>
+        <ul>{% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+            {% endfor %}
+        </ul>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+

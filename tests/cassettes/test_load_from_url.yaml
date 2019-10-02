@@ -1,0 +1,94 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: https://datopian.gitlab.io/ckan-ng-harvest/DO-NOT-EXISTS.json
+  response:
+    body:
+      string: "\n<!DOCTYPE html>\n<html>\n<head>\n  <meta content=\"width=device-width,\
+        \ initial-scale=1, maximum-scale=1\" name=\"viewport\">\n  <title>The page\
+        \ you're looking for could not be found (404)</title>\n  <style>\n    body\
+        \ {\n      color: #666;\n      text-align: center;\n      font-family: \"\
+        Helvetica Neue\", Helvetica, Arial, sans-serif;\n      margin: auto;\n   \
+        \   font-size: 14px;\n    }\n\n    h1 {\n      font-size: 56px;\n      line-height:\
+        \ 100px;\n      font-weight: 400;\n      color: #456;\n    }\n\n    h2 {\n\
+        \      font-size: 24px;\n      color: #666;\n      line-height: 1.5em;\n \
+        \   }\n\n    h3 {\n      color: #456;\n      font-size: 20px;\n      font-weight:\
+        \ 400;\n      line-height: 28px;\n    }\n\n    hr {\n      max-width: 800px;\n\
+        \      margin: 18px auto;\n      border: 0;\n      border-top: 1px solid #EEE;\n\
+        \      border-bottom: 1px solid white;\n    }\n\n    img {\n      max-width:\
+        \ 40vw;\n      display: block;\n      margin: 40px auto;\n    }\n\n    a {\n\
+        \      line-height: 100px;\n      font-weight: 400;\n      color: #4A8BEE;\n\
+        \      font-size: 18px;\n      text-decoration: none;\n    }\n\n    .container\
+        \ {\n      margin: auto 20px;\n    }\n\n    .go-back {\n      display: none;\n\
+        \    }\n\n  </style>\n</head>\n\n<body>\n  <img src=\"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEwIiBoZWlnaHQ9IjIxMCIgdmlld0JveD0iMCAwIDIxMCAyMTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGggZD0iTTEwNS4wNjE0IDIwMy42NTVsMzguNjQtMTE4LjkyMWgtNzcuMjhsMzguNjQgMTE4LjkyMXoiIGZpbGw9IiNlMjQzMjkiLz4KICA8cGF0aCBkPSJNMTA1LjA2MTQgMjAzLjY1NDhsLTM4LjY0LTExOC45MjFoLTU0LjE1M2w5Mi43OTMgMTE4LjkyMXoiIGZpbGw9IiNmYzZkMjYiLz4KICA8cGF0aCBkPSJNMTIuMjY4NSA4NC43MzQxbC0xMS43NDIgMzYuMTM5Yy0xLjA3MSAzLjI5Ni4xMDIgNi45MDcgMi45MDYgOC45NDRsMTAxLjYyOSA3My44MzgtOTIuNzkzLTExOC45MjF6IiBmaWxsPSIjZmNhMzI2Ii8+CiAgPHBhdGggZD0iTTEyLjI2ODUgODQuNzM0Mmg1NC4xNTNsLTIzLjI3My03MS42MjVjLTEuMTk3LTMuNjg2LTYuNDExLTMuNjg1LTcuNjA4IDBsLTIzLjI3MiA3MS42MjV6IiBmaWxsPSIjZTI0MzI5Ii8+CiAgPHBhdGggZD0iTTEwNS4wNjE0IDIwMy42NTQ4bDM4LjY0LTExOC45MjFoNTQuMTUzbC05Mi43OTMgMTE4LjkyMXoiIGZpbGw9IiNmYzZkMjYiLz4KICA8cGF0aCBkPSJNMTk3Ljg1NDQgODQuNzM0MWwxMS43NDIgMzYuMTM5YzEuMDcxIDMuMjk2LS4xMDIgNi45MDctMi45MDYgOC45NDRsLTEwMS42MjkgNzMuODM4IDkyLjc5My0xMTguOTIxeiIgZmlsbD0iI2ZjYTMyNiIvPgogIDxwYXRoIGQ9Ik0xOTcuODU0NCA4NC43MzQyaC01NC4xNTNsMjMuMjczLTcxLjYyNWMxLjE5Ny0zLjY4NiA2LjQxMS0zLjY4NSA3LjYwOCAwbDIzLjI3MiA3MS42MjV6IiBmaWxsPSIjZTI0MzI5Ii8+Cjwvc3ZnPgo=\"\
+        \n       alt=\"GitLab Logo\" />\n  <h1>\n    404\n  </h1>\n  <div class=\"\
+        container\">\n    <h3>The page you're looking for could not be found.</h3>\n\
+        \    <hr />\n    <p>The resource that you are attempting to access does not\
+        \ exist or you don't have the necessary permissions to view it.</p>\n    \
+        \ <p>Make sure the address is correct and that the page hasn't moved.</p>\n\
+        \     <p>Please contact your GitLab administrator if you think this is a mistake.</p>\n\
+        \    <a href=\"javascript:history.back()\" class=\"js-go-back go-back\">Go\
+        \ back</a>\n  </div>\n  <script>\n    (function () {\n      var goBack = document.querySelector('.js-go-back');\n\
+        \n      if (history.length > 1) {\n        goBack.style.display = 'inline';\n\
+        \      }\n    })();\n  </script>\n</body>\n</html>\n\n"
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+      Date:
+      - Wed, 04 Sep 2019 18:57:50 GMT
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: https://datopian.gitlab.io/ckan-ng-harvest/bad.json
+  response:
+    body:
+      string: "{\n    \"bad\": \"json\",\n    LALALALA\n}"
+    headers:
+      Accept-Ranges:
+      - bytes
+      Cache-Control:
+      - max-age=600
+      Content-Length:
+      - '35'
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 04 Sep 2019 18:57:51 GMT
+      Expires:
+      - Wed, 04 Sep 2019 19:07:51 UTC
+      Last-Modified:
+      - Thu, 18 Jul 2019 11:37:19 GMT
+      Vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+version: 1
