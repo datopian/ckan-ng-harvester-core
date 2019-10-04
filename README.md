@@ -104,6 +104,7 @@ pip install -r requirements.txt
 
 This will install the library in development mode, and other libraries for tests. 
 
+## Test
 
 Then to run the test suite with pytest:
 
@@ -124,8 +125,6 @@ To actually hit the internet without use mocks, disable the plugin
 ```
 pytest --disable-vcr
 ```
-
-## Test
 
 Tests without a CKAN instance
 
