@@ -144,7 +144,8 @@ class DataJSONSchema1_1(CKANDatasetAdapter):
             if value.startswith('mailto:'):
                 value = value.replace('mailto:', '')
             return value
-        elif field in ['bureau_code', 'program_code', 'language']:
+        # for usmetadataschema elif field in ['bureau_code', 'program_code', 'language', 'extras__bureauCode']:
+        elif field in ['extras__bureauCode', 'extras__programCode']:
             if type(value) == list:
                 value = ','.join(value)
             return value
