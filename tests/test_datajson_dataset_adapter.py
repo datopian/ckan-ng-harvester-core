@@ -49,7 +49,7 @@ class TestCKANDatasetAdapter(object):
 
     def test_datajson_1_1_to_ckan(self):
 
-        djss = DataJSONSchema1_1(original_dataset=self.test_datajson_dataset, schema='usmetadata')
+        djss = DataJSONSchema1_1(original_dataset=self.test_datajson_dataset)
         # ORG is required!
         djss.ckan_owner_org_id = 'XXXX'
 

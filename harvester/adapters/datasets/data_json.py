@@ -254,8 +254,11 @@ class DataJSONSchema1_1(CKANDatasetAdapter):
         publisher = datajson_dataset.get('publisher', None)
         if publisher is not None:
             publisher_name = publisher.get('name', '')
-            # self.set_extra('publisher', publisher_name)
-            self.ckan_dataset['publisher'] = publisher_name
+            
+            # TODO check which place we are going to use 
+            self.set_extra('publisher', publisher_name)
+            # self.ckan_dataset['publisher'] = publisher_name
+
             parent_publisher = publisher.get('subOrganizationOf', None)
             if parent_publisher is not None:
                 publisher_hierarchy = [publisher_name]
