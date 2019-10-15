@@ -11,6 +11,9 @@ test:
     - echo '***************************'
     - echo 'Testing package'
     - python -m pytest tests/
+    - echo '***************************'
+    - echo 'Static security scan--pipeline will fail on medium/high severity'
+    - bandit -c bandit.yml -ll -r .
 
   only:
   - merge_requests
