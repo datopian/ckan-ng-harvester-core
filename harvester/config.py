@@ -74,14 +74,15 @@ def get_errors_path(create=True):
 
 def get_ckan_results_cache_path(create=True):
     """ local path for ckan results file """
-    path =  os.path.join(get_base_path(), 'ckan-results.json')
+    path = os.path.join(get_base_path(), 'ckan-results.json')
     if not os.path.isfile(path):
         open(path, 'w').close()
     return path
 
+
 def get_comparison_results_path(create=True):
     """ local path for comparison results file """
-    path =  os.path.join(get_base_path(), 'compare-results.csv')
+    path = os.path.join(get_base_path(), 'compare-results.csv')
     if not os.path.isfile(path):
         open(path, 'w').close()
     return path
