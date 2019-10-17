@@ -1,10 +1,5 @@
 image: python:3.6
 
-stages:
-  - build
-  - test
-  - deploy
-
 test:
   stage: test
   script:
@@ -20,9 +15,3 @@ test:
   only:
   - merge_requests
   - pushes
-
-docker:
-  stage: deploy
-  only: master
-  script:
-    - docker build . -t viderum/ckan-harvester-ng
