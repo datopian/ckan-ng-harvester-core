@@ -4,7 +4,7 @@ https://github.com/GSA/ckanext-spatial/blob/2a25f8d60c31add77e155c4136f2c0d4e3b8
 ISO 19115: https://www.iso.org/standard/26020.html
 """
 from lxml import etree as letree
-from harvester.logs import logger
+from harvesters.logs import logger
 
 
 class ISOElement:

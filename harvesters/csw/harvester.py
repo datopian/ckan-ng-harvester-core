@@ -10,16 +10,17 @@ USACE Geospatial CSW: http://metadata.usace.army.mil/geoportal/csw?Request=GetCa
 GeoNode State CSW: http://geonode.state.gov/catalogue/csw?service=CSW&version=2.0.2&request=GetRecords&typenames=csw:Record&elementsetname=brief
 OpenTopography CSW: https://portal.opentopography.org/geoportal/csw
 """
-import requests
 import json
+import requests
 from slugify import slugify
 from urllib.parse import urlparse, urlencode, urlunparse
 from owslib.csw import CatalogueServiceWeb, namespaces
 from owslib.ows import ExceptionReport
 from owslib import util
 import xml.etree.ElementTree as xet
-from harvester.iso_geo import ISODocument
-from harvester.logs import logger
+
+from harvesters.csw.iso_geo import ISODocument
+from harvesters.logs import logger
 
 
 class CSWSource:

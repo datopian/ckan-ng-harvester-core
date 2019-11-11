@@ -1,5 +1,5 @@
 import pytest
-from harvester.adapters.datasets.csw import CSWDataset
+from harvesters.csw.ckan.dataset import CSWDataset
 
 
 class TestCKANDatasetAdapter(object):

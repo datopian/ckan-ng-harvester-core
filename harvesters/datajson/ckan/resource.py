@@ -1,7 +1,7 @@
-from harvester.adapters.ckan_resource_adapters import CKANResourceAdapter
-from harvester.logs import logger
-from slugify import slugify
 import json
+from slugify import slugify
+from harvesters.logs import logger
+from harvester_adapters.ckan.resource import CKANResourceAdapter
 
 
 class DataJSONDistribution(CKANResourceAdapter):

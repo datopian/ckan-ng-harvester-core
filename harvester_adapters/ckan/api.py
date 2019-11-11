@@ -1,10 +1,11 @@
-import json
-import requests
 import os
-from datapackage import Package, Resource
-from slugify import slugify
+import json
 import base64
-from harvester.logs import logger
+import requests
+from slugify import slugify
+from datapackage import Package, Resource
+from harvesters.logs import logger
+
 
 class CKANPortalAPI:
     """ API and data from data.gov
@@ -135,7 +136,6 @@ class CKANPortalAPI:
             else:
                 start += rows
                 self.package_list += results
-                logger.debug(f'datasets found: {results}')
                 yield(results)
 
     def search_packages(self,
@@ -579,17 +579,23 @@ class CKANPortalAPI:
         return json_content
 
     def delete_all_harvest_sources(self, harvest_type='harvest', source_type='datajson'):
-        logger.info(f'Deleting local harvest sources')
-        deleted = 0
+        logger.info(f'Deleting local harvest sources from {self.base_url}')
+        deleted = []
         for harvest_sources in self.search_harvest_packages(harvest_type=harvest_type, source_type=source_type):
             for harvest_source in harvest_sources:
+                
                 harvest_source_name = harvest_source['name']
+                if harvest_source_name in deleted:
+                    #TODO fix duplicated
+                    continue
+
                 logger.info(f'Deleting local harvest {harvest_source_name}')
                 res = self.delete_package(ckan_package_id_or_name=harvest_source_name)
                 if not res['success']:
                     raise Exception(f'Failed to delete {harvest_source_name}')
                 else:
                     logger.info(f'Deleted {harvest_source_name}')
+                    deleted.append(harvest_source_name)
                     deleted += 1
 
         logger.info(f'{deleted} harvest sources deleted')

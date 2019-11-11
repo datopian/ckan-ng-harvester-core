@@ -1,7 +1,7 @@
 ''' transform datasets to CKAN datasets '''
 from slugify import slugify
 from abc import ABC, abstractmethod
-from harvester.settings import ckan_settings
+from harvester_adapters.ckan import settings
 
 
 class CKANDatasetAdapter(ABC):
@@ -176,7 +176,7 @@ class CKANDatasetAdapter(ABC):
         for tag in tags:
             tag = tag.strip()
             if tag != '':
-                tag = slugify(tag[:ckan_settings.MAX_TAG_NAME_LENGTH])
+                tag = slugify(tag[:settings.MAX_TAG_NAME_LENGTH])
                 ret.append({"name": tag})
         return ret
 
@@ -201,7 +201,7 @@ class CKANDatasetAdapter(ABC):
         # old harvester do like this: https://github.com/GSA/ckanext-datajson/blob/07ca20e0b6dc1898f4ca034c1e073e0c27de2015/ckanext/datajson/harvester_base.py#L747
 
         name = slugify(title)
-        cut_at = ckan_settings.MAX_NAME_LENGTH - 5  # max length is 100
+        cut_at = settings.MAX_NAME_LENGTH - 5  # max length is 100
         if len(name) > cut_at:
             name = name[:cut_at]
 

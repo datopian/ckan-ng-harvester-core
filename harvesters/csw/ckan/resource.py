@@ -1,10 +1,11 @@
+import json
 import requests
 import mimetypes
-from owslib import wms
-from harvester.adapters.ckan_resource_adapters import CKANResourceAdapter
-from harvester.logs import logger
 from slugify import slugify
-import json
+from owslib import wms
+
+from harvester_adapters.ckan.resource import CKANResourceAdapter
+from harvesters.logs import logger
 
 
 class CSWResource(CKANResourceAdapter):

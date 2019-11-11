@@ -1,10 +1,11 @@
-from harvester.adapters.ckan_dataset_adapters import CKANDatasetAdapter
-from harvester.logs import logger
+import json
 from slugify import slugify
 from urllib.parse import urlparse
-import json
-from harvester.adapters.resources.csw import CSWResource
-from harvester.settings import ckan_settings
+
+from harvester_adapters.ckan.dataset import CKANDatasetAdapter
+from harvesters.csw.ckan.resource import CSWResource
+from harvesters.logs import logger
+from harvester_adapters.ckan import settings as ckan_settings
 
 
 class CSWDataset(CKANDatasetAdapter):

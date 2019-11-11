@@ -16,7 +16,7 @@ from datapackage import Package, Resource
 from slugify import slugify
 from validate_email import validate_email
 
-from harvester.validator_constants import (ACCRUAL_PERIODICITY_VALUES, BUREAU_CODE_URL,
+from harvesters.datajson.validator_constants import (ACCRUAL_PERIODICITY_VALUES, BUREAU_CODE_URL,
                                       IANA_MIME_REGEX, ISO8601_REGEX, ISSUED_REGEX,
                                       LANGUAGE_REGEX, MODIFIED_REGEX_1,
                                       MODIFIED_REGEX_2, MODIFIED_REGEX_3,
@@ -24,7 +24,7 @@ from harvester.validator_constants import (ACCRUAL_PERIODICITY_VALUES, BUREAU_CO
                                       PROGRAM_CODE_REGEX, REDACTED_REGEX,
                                       TEMPORAL_REGEX_1, TEMPORAL_REGEX_2,
                                       TEMPORAL_REGEX_3)
-from harvester.logs import logger
+from harvesters.logs import logger
 
 
 class JSONSchema:

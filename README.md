@@ -10,7 +10,7 @@ pip install ckan-harvester
 ### Use data.json sources
 
 ```python
-from harvester.data_json import DataJSON
+from harvesters.data_json import DataJSON
 dj = DataJSON()
 dj.url = 'https://data.iowa.gov/data.json'
 ret, error = dj.download_data_json()
@@ -84,7 +84,7 @@ Impaired Streams 2008
 ### Use CSW sources
 
 ```python
-from harvester.csw import CSWSource
+from harvesters.csw import CSWSource
 c = CSWSource(url='http://data.nconemap.com/geoportal/csw?Request=GetCapabilities&Service=CSW&Version=2.0.2')
 csw.connect_csw()
  # True

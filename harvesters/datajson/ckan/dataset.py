@@ -1,9 +1,9 @@
-from harvester.adapters.ckan_dataset_adapters import CKANDatasetAdapter
-from harvester.logs import logger
-from slugify import slugify
 import json
-from harvester.adapters.resources.data_json import DataJSONDistribution
-from harvester.settings import ckan_settings
+from slugify import slugify
+from harvesters.logs import logger
+from harvesters.datajson.ckan.resource import DataJSONDistribution
+from harvester_adapters.ckan import settings as ckan_settings
+from harvester_adapters.ckan.dataset import CKANDatasetAdapter
 
 
 class DataJSONSchema1_1(CKANDatasetAdapter):

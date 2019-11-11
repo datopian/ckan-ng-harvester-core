@@ -1,6 +1,6 @@
 import os
-from slugify import slugify
 import json
+from slugify import slugify
 
 
 DATA_FOLDER_PATH = 'data'

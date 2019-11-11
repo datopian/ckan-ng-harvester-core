@@ -1,9 +1,7 @@
 import pytest
-from harvester.data_json import DataJSON
+from harvesters.datajson.harvester import DataJSON
 
 base_url = 'https://datopian.gitlab.io/ckan-ng-harvest'
-
-
 
 test_original_datajson_datasets = {
 "@type": "dcat:Catalog",

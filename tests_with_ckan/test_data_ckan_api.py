@@ -1,17 +1,17 @@
-import unittest
-from harvester.data_gov_api import CKANPortalAPI
-import random
-from slugify import slugify
 import json
-from harvester.logs import logger
+import random
+import unittest
+from slugify import slugify
 
-# put you settings in the local_settings hidden-to-github file
-from settings import (HARVEST_SOURCE_ID,
-                       CKAN_API_KEY,
-                       CKAN_BASE_URL,
-                       CKAN_ORG_ID,
-                       CKAN_VALID_USER_ID
-                      )
+from harvesters.logs import logger
+from harvester_adapters.ckan.api import CKANPortalAPI
+
+from harvester_adapters.ckan.settings import (HARVEST_SOURCE_ID,
+                                              CKAN_API_KEY,
+                                              CKAN_BASE_URL,
+                                              CKAN_ORG_ID,
+                                              CKAN_VALID_USER_ID
+                                             )
 
 
 class CKANPortalAPITestClass(unittest.TestCase):
@@ -59,9 +59,13 @@ class CKANPortalAPITestClass(unittest.TestCase):
         self.assertTrue(res['success'])
 
     def test_create_harvest_source(self):
-        logger.info('Creating harvest source')
+        logger.info(f'Creating harvest source from {CKAN_BASE_URL}')
         cpa = CKANPortalAPI(base_url=CKAN_BASE_URL, api_key=CKAN_API_KEY)
-        cpa.delete_all_harvest_sources(harvest_type='harvest', source_type='datajson')
+        try:
+            cpa.delete_all_harvest_sources(harvest_type='harvest', source_type='datajson')
+        except Exception as e:
+            logger.error(f'Error cleaning previous harvest soures {e}')
+            pass
 
         title = 'Energy JSON test {}'.format(random.randint(1, 999999))
         url = 'http://www.energy.gov/data-{}.json'.format(random.randint(1, 999999))
