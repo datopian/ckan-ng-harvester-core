@@ -1,5 +1,9 @@
 image: python:3.6
 
+stages:
+  - test
+  - deploy
+
 test:
   stage: test
   script:
@@ -18,3 +22,16 @@ test:
   only:
   - merge_requests
   - pushes
+
+
+deploy_to_pypi:
+  stage: deploy
+  variables:
+    TWINE_USERNAME: $PYPI_USER
+    TWINE_PASSWORD: $PYPI_PASS
+  script:
+    - pip install twine
+    - python setup.py sdist
+    - twine upload dist/*
+  only:
+    - tags
