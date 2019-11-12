@@ -18,31 +18,27 @@ from owslib.csw import CatalogueServiceWeb, namespaces
 from owslib.ows import ExceptionReport
 from owslib import util
 import xml.etree.ElementTree as xet
-
+from harvesters.harvester import HarvesterBaseSource
 from harvesters.csw.iso_geo import ISODocument
 from harvesters.logs import logger
 
 
-class CSWSource:
+class CSWSource(HarvesterBaseSource):
     """ A CSW Harvest Source """
 
     csw = None
     csw_info = {}
 
-    errors = []
-    datasets = []  # all datasets included
-    duplicates = []  # list of datasets with the same identifier
-
     def __init__(self, url):
+        super().__init__()
         self.url = url
-        self.csw = None
 
     def get_cleaned_url(self):
         # remove all URL params
         parts = urlparse(self.url)
         return urlunparse((parts.scheme, parts.netloc, parts.path, None, None, None))
 
-    def connect_csw(self, clean_url=True, timeout=120):
+    def fetch(self, clean_url=True, timeout=120):
         # connect to csw source
         url = self.get_cleaned_url() if clean_url else self.url
         try:
@@ -50,10 +46,10 @@ class CSWSource:
         except Exception as e:
             error = f'Error connection CSW: {e}'
             self.errors.append(error)
-            return False
+            logger.error(error)
+            raise
 
         self.read_csw_info()
-        return True
 
     def as_json(self):
         self.read_csw_info()
@@ -355,10 +351,8 @@ class CSWSource:
         return url
 
     def validate(self):
-        errors = []  # to return list of validation errors
-        # return False, errors
-
-        return True, None
+        # TODO
+        return True
 
     def remove_duplicated_identifiers(self):
         unique_identifiers = []
@@ -379,48 +373,5 @@ class CSWSource:
         for dataset in self.datasets:
             pass  # TODO
         return total
-
-    def save_data_json(self, path):
-        """ save the source data.json file """
-        dmp = json.dumps(self.as_json(), indent=2)
-        f = open(path, 'w')
-        f.write(dmp)
-        f.close()
-
-    def save_errors(self, path):
-        dmp = json.dumps(self.errors, indent=2)
-        f = open(path, 'w')
-        f.write(dmp)
-        f.close()
-
-    def save_duplicates(self, path):
-        dmp = json.dumps(self.duplicates, indent=2)
-        f = open(path, 'w')
-        f.write(dmp)
-        f.close()
-
-    def save_datasets_as_data_packages(self, folder_path):
-        """ save each dataset from a data.json source as _datapackage_ """
-        for dataset in self.datasets:
-            package = Package()
-
-            #TODO check this, I'm learning datapackages
-            resource = Resource({'data': dataset})
-            resource.infer()  #adds "name": "inline"
-
-            #FIXME identifier uses incompables characthers as paths (e.g. /).
-            # could exist duplicates paths from different resources
-            # use BASE64 or hashes
-            idf = slugify(dataset['identifier'])
-
-            resource_path = os.path.join(folder_path, f'resource_data_json_{idf}.json')
-            if not resource.valid:
-                raise Exception('Invalid resource')
-
-            resource.save(resource_path)
-
-            package.add_resource(descriptor=resource.descriptor)
-            package_path = os.path.join(folder_path, f'pkg_data_json_{idf}.zip')
-            package.save(target=package_path)
 
 

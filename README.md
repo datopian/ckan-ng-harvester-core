@@ -13,20 +13,17 @@ pip install ckan-harvester
 from harvesters.data_json import DataJSON
 dj = DataJSON()
 dj.url = 'https://data.iowa.gov/data.json'
-ret, error = dj.download_data_json()
-print(ret, error)
-# True None
+try:
+	dj.fetch()
+except Exception as e:
+	print(e)
 
-ret, error = dj.load_data_json()
-print(ret, error)
-# True None
-
-ret, errors = dj.validate_json()
-print(ret, errors)
-# False ['Error validating JsonSchema: \'bureauCode\' is a required property ...
+valid = dj.validate()
+print(dj.errors)
+# ['Error validating JsonSchema: \'bureauCode\' is a required property ...
 
 # full dict with the source
-print(dj.data_json)
+print(dj.as_json())
 """
 {
 	'@context': 'https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld',
@@ -86,8 +83,7 @@ Impaired Streams 2008
 ```python
 from harvesters.csw import CSWSource
 c = CSWSource(url='http://data.nconemap.com/geoportal/csw?Request=GetCapabilities&Service=CSW&Version=2.0.2')
-csw.connect_csw()
- # True
+csw.fetch()
 
 csw_info = csw.read_csw_info()
 print('CSW title: {}'.format(csw_info['identification']['title']))

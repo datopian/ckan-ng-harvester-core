@@ -92,16 +92,17 @@ test_original_datajson_datasets = {
 def test_load_from_url():
     dj = DataJSON()
 
-    ret, error = dj.download_data_json()
-    assert ret is False  # No URL
+    with pytest.raises(Exception):
+        dj.fetch()
 
     dj.url = f'{base_url}/DO-NOT-EXISTS.json'
-    ret, error = dj.download_data_json()
-    assert ret is False  # URL do not exists (404)
+    with pytest.raises(Exception):
+        dj.fetch()
 
     dj.url = f'{base_url}/bad.json'
-    ret, error = dj.download_data_json()
-    assert ret is True  # URL exists but it's a bad JSON, do not fails, it's downloadable (OK)
+    dj.fetch()  # URL exists but it's a bad JSON, do not fails, it's downloadable (OK)
+    valid = dj.validate()
+    assert not valid
 
 
 @pytest.mark.vcr()
@@ -109,15 +110,16 @@ def test_read_json():
     dj = DataJSON()
 
     dj.url = f'{base_url}/bad.json'
-    ret, error = dj.download_data_json()
+    dj.fetch()
 
-    ret, error = dj.load_data_json()
-    assert ret is False  # it's a bad JSON
+    valid = dj.validate()
+    assert not valid  # bad json
 
     dj.url = f'{base_url}/good-but-not-data.json'
-    ret, error = dj.download_data_json()
-    ret, error = dj.load_data_json()
-    assert ret is True  # it's a good JSON
+    dj.fetch()
+    valid = dj.validate()
+    assert not valid  # it's good as JSON
+    assert 'Missing "dataset" KEY' in ', '.join(dj.errors)
 
 
 @pytest.mark.vcr()
@@ -126,38 +128,31 @@ def test_validate_json1():
     dj = DataJSON()
 
     dj.url = f'{base_url}/good-but-not-data.json'
-    ret, error = dj.download_data_json()
-    ret, error = dj.load_data_json()
-    ret, errors = dj.validate_json()
-    assert ret is False  # no schema
+    dj.fetch()
+    
+    valid = dj.validate()
+    assert not valid  # no schema
 
 
 @pytest.mark.vcr()
 def test_validate_json2():
     # data.json without errors
     dj = DataJSON()
-
     dj.url = f'{base_url}/usda.gov.data.json'
-    ret, error = dj.download_data_json()
-    ret, error = dj.load_data_json()
-    ret, errors = dj.validate_json()
-
-    assert ret is True  # schema works without errors
-    assert errors is None
+    dj.fetch()
+    valid = dj.validate()
+    assert valid  # schema works without errors
+    assert dj.errors == []
 
 
 @pytest.mark.vcr()
 def test_validate_json3():
     # data.json with some errors
     dj = DataJSON()
-
     dj.url = f'{base_url}/healthdata.gov.data.json'
-    ret, error = dj.download_data_json()
-    ret, error = dj.load_data_json()
-    ret, errors = dj.validate_json()
-
-    assert ret is False  # schema works but has errors
-    assert len(errors) == 1
+    dj.fetch()
+    valid = dj.validate()
+    assert len(dj.errors) == 1
 
 
 @pytest.mark.vcr()
@@ -165,9 +160,9 @@ def test_load_from_data_json_object():
     # test loading a data.json dict
     dj = DataJSON()
     dj.read_dict_data_json(data_json_dict=test_original_datajson_datasets)
-    ret, error = dj.validate_json()
-    print(error)
-
+    valid = dj.validate()
+    dj.post_fetch()
+    
     for dataset in dj.datasets:
         if dataset['identifier'] == 'USDA-26521':
             assert dataset['is_collection'] == True
@@ -179,9 +174,9 @@ def test_load_from_data_json_object():
 def test_catalog_extras():
     dj = DataJSON()
     dj.url = f'{base_url}/usda.gov.data.json'
-    ret, error = dj.download_data_json()
-    ret, error = dj.load_data_json()
-    ret, errors = dj.validate_json()
+    dj.fetch()
+    valid = dj.validate()
+    dj.post_fetch()
     print(dj.catalog_extras)
     assert dj.catalog_extras['catalog_@context'] == 'https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld'
     assert 'catalog_@id' not in dj.catalog_extras

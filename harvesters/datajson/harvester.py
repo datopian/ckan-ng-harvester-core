@@ -12,7 +12,6 @@ import urllib.request
 import jsonschema as jss
 import requests
 import rfc3987 as rfc3987_url
-from datapackage import Package, Resource
 from slugify import slugify
 from validate_email import validate_email
 
@@ -25,6 +24,7 @@ from harvesters.datajson.validator_constants import (ACCRUAL_PERIODICITY_VALUES,
                                       TEMPORAL_REGEX_1, TEMPORAL_REGEX_2,
                                       TEMPORAL_REGEX_3)
 from harvesters.logs import logger
+from harvesters.harvester import HarvesterBaseSource
 
 
 class JSONSchema:
@@ -50,42 +50,40 @@ class JSONSchema:
             raise ValueError(error)
 
 
-class DataJSON:
+class DataJSON(HarvesterBaseSource):
     """ a data.json file for read and validation """
     url = None  # URL of de data.json file
     schema_version = None
     raw_data_json = None  # raw downloaded text
     data_json = None  # JSON readed from data.json file
-
     headers = None
-    datasets = []  # all datasets described in data.json
-    validation_errors = []
-    duplicates = []  # list of datasets with the same identifier
 
-    def download_data_json(self, timeout=30):
+    def fetch(self, timeout=30):
         """ download de data.json file """
+        logger.info(f'Fetching data from {self.url}')
         if self.url is None:
-            return False, "No URL defined"
+            error = "No URL defined"
+            self.errors.append(error)
+            logger.error(error)
+            raise Exception(error)
 
         try:
-            req = requests.get(self.url, timeout=timeout
-                               # ,verify=False  # avoid SSL verification
-                               # e.g fails at https://www2.ed.gov/data.json
-                               # "Adding certificate verification is strongly advised"
-                               # FIXME: maybe notify error and continue
-                               )
+            req = requests.get(self.url, timeout=timeout)
         except Exception as e:
             error = 'ERROR Donwloading data: {} [{}]'.format(self.url, e)
-            self.validation_errors.append(error)
-            return False, error
+            self.errors.append(error)
+            logger.error(error)
+            raise
 
+        logger.info(f'Data fetched status {req.status_code}')
         if req.status_code >= 400:
             error = '{} HTTP error: {}'.format(self.url, req.status_code)
-            self.validation_errors.append(error)
-            return False, error
+            self.errors.append(error)
+            logger.error(error)
+            raise Exception(error)
 
+        logger.info(f'Data fetched OK')
         self.raw_data_json = req.content
-        return True, None
 
     def read_local_data_json(self, data_json_path):
         # initialize reading a JSON file
@@ -100,38 +98,40 @@ class DataJSON:
         self.data_json = data_json_dict
         return True, None
 
-    def load_data_json(self):
-        """ load raw data as a JSON object """
+    def validate(self):
+
         try:
             self.data_json = json.loads(self.raw_data_json)  # check for encoding errors
         except Exception as e:
             error = 'ERROR parsing JSON: {}. Data: {}'.format(e, self.raw_data_json)
-            self.validation_errors.append(error)
-            return False, error
-
-        return True, None
-
-    def validate_json(self):
-        errors = []  # to return list of validation errors
+            self.errors.append(error)
+            logger.error(error)
+            return False
+            
+        error = None
 
         if self.data_json is None:
-            return False, ['No data json available']
+            error = 'No data json available'
 
         if type(self.data_json) == list:
-            return False, ['Data.json is a simple list']
-
+            error = 'Data.json is a simple list. We expect a dict'
+            
         if not self.data_json.get('describedBy', False):
-            return False, ['Missing describedBy KEY']
-
+            error = 'Missing describedBy KEY'
+            
         if not self.data_json.get('dataset', False):
-            return False, ['Missing "dataset" KEY']
+            error = 'Missing "dataset" KEY'
+            
+        if error is not None:
+            self.errors.append(error)
+            logger.error(error)
+            return False
 
         schema_definition_url = self.data_json['describedBy']
         self.schema = JSONSchema(url=schema_definition_url)
-        ok, schema_errors = self.validate_schema()
-        if not ok:
-            errors += schema_errors
-
+        # TODO analyze if it's OK to continue
+        validated_schema = self.validate_schema()
+        
         # validate with jsonschema lib
         # many data.json are not extrictly valid, we use as if they are
 
@@ -141,10 +141,13 @@ class DataJSON:
             jss.validate(instance=self.data_json, schema=self.schema.json_content)
         except Exception as e:
             error = "Error validating JsonSchema: {}".format(e)
-            errors.append(error)
+            self.errors.append(error)
 
-        # read datasets by now, even in error
+        # read datasets by now, even if errors
+        # TODO define wich errors requires a False response
+        return True
 
+    def post_fetch(self):
         # save headers
         self.headers = self.data_json.copy()
         del self.headers['dataset']
@@ -159,12 +162,6 @@ class DataJSON:
         """
         self.datasets = self.data_json['dataset']
         self.__detect_collections()
-
-        self.validation_errors = errors
-        if len(errors) > 0:
-            return False, errors
-        else:
-            return True, None
 
     def __detect_collections(self):
         # if a dataset has the property "isPartOf" assigned then
@@ -191,19 +188,20 @@ class DataJSON:
         #TODO check how ckanext-datajson uses jsonschema. One example (there are more) https://github.com/GSA/ckanext-datajson/blob/datagov/ckanext/datajson/harvester_base.py#L368
 
         # https://github.com/GSA/ckanext-datajson/blob/datagov/ckanext/datajson/harvester_base.py#L120
-        errors = []
 
         # https://github.com/GSA/ckanext-datajson/blob/datagov/ckanext/datajson/harvester_base.py#L137
         schema_value = self.data_json.get('conformsTo', '')
+        errors_count = 0
         if schema_value not in self.schema.valid_schemas.keys():
-            errors.append(f'Error reading json schema value. "{schema_value}" is not known schema')
+            errors_count += 1
+            self.errors.append(f'Error reading json schema value. "{schema_value}" is not known schema')
         self.schema_version = self.schema.valid_schemas.get(schema_value, '1.0')
 
         # list of needed catalog values  # https://github.com/GSA/ckanext-datajson/blob/datagov/ckanext/datajson/harvester_base.py#L152
         catalog_fields = ['@context', '@id', 'conformsTo', 'describedBy']
         self.catalog_extras = dict(('catalog_'+k, v) for (k, v) in self.data_json.items() if k in catalog_fields)
 
-        return len(errors) == 0, errors
+        return errors_count == 0
 
     def remove_duplicated_identifiers(self):
         unique_identifiers = []
@@ -226,48 +224,8 @@ class DataJSON:
             total += len(distribution)
         return total
 
-    def save_data_json(self, path):
-        """ save the source data.json file """
-        dmp = json.dumps(self.data_json, indent=2)
-        f = open(path, 'w')
-        f.write(dmp)
-        f.close()
-
-    def save_errors(self, path):
-        dmp = json.dumps(self.validation_errors, indent=2)
-        f = open(path, 'w')
-        f.write(dmp)
-        f.close()
-
-    def save_duplicates(self, path):
-        dmp = json.dumps(self.duplicates, indent=2)
-        f = open(path, 'w')
-        f.write(dmp)
-        f.close()
-
-    def save_datasets_as_data_packages(self, folder_path):
-        """ save each dataset from a data.json source as _datapackage_ """
-        for dataset in self.datasets:
-            package = Package()
-
-            #TODO check this, I'm learning datapackages
-            resource = Resource({'data': dataset})
-            resource.infer()  #adds "name": "inline"
-
-            #FIXME identifier uses incompables characthers as paths (e.g. /).
-            # could exist duplicates paths from different resources
-            # use BASE64 or hashes
-            idf = slugify(dataset['identifier'])
-
-            resource_path = os.path.join(folder_path, f'resource_data_json_{idf}.json')
-            if not resource.valid:
-                raise Exception('Invalid resource')
-
-            resource.save(resource_path)
-
-            package.add_resource(descriptor=resource.descriptor)
-            package_path = os.path.join(folder_path, f'pkg_data_json_{idf}.zip')
-            package.save(target=package_path)
+    def as_json(self):
+        return self.data_json
 
 
 class DataJSONDataset:
