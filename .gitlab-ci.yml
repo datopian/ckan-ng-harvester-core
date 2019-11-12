@@ -28,10 +28,7 @@ deploy_to_pypi:
   stage: deploy
   script:
     - pip install twine
-    - echo "[pypi]" >> ~/.pypirc
-    - echo "username =" $TWINE_USERNAME >> ~/.pypirc
-    - echo "password =" $TWINE_PASSWORD >> ~/.pypirc
-    - python setup.py sdist
+    - python setup.py sdist bdist_wheel
     - twine upload --verbose dist/*
   only:
     - tags
