@@ -112,14 +112,11 @@ class DataJSON(HarvesterBaseSource):
 
         if self.data_json is None:
             error = 'No data json available'
-
-        if type(self.data_json) == list:
-            error = 'Data.json is a simple list. We expect a dict'
-            
-        if not self.data_json.get('describedBy', False):
-            error = 'Missing describedBy KEY'
-            
-        if not self.data_json.get('dataset', False):
+        elif type(self.data_json) == list:
+            error = 'Data.json is a simple list. We expect a dict'  
+        elif not self.data_json.get('describedBy', False):
+            error = 'Missing describedBy KEY'  
+        elif not self.data_json.get('dataset', False):
             error = 'Missing "dataset" KEY'
             
         if error is not None:
@@ -129,8 +126,10 @@ class DataJSON(HarvesterBaseSource):
 
         schema_definition_url = self.data_json['describedBy']
         self.schema = JSONSchema(url=schema_definition_url)
-        # TODO analyze if it's OK to continue
+        
         validated_schema = self.validate_schema()
+        if not validated_schema:
+            return False
         
         # validate with jsonschema lib
         # many data.json are not extrictly valid, we use as if they are
@@ -138,13 +137,13 @@ class DataJSON(HarvesterBaseSource):
         # TODO check and re-use a ckanext-datajson validator: https://github.com/GSA/ckanext-datajson/blob/datagov/ckanext/datajson/datajsonvalidator.py
 
         try:
-            jss.validate(instance=self.data_json, schema=self.schema.json_content)
+            schema = self.schema.json_content
+            jss.validate(instance=self.data_json, schema=schema)
         except Exception as e:
-            error = "Error validating JsonSchema: {}".format(e)
+            error = "Error validating JsonSchema: {} with schema {}".format(e, schema)
             self.errors.append(error)
+            return False
 
-        # read datasets by now, even if errors
-        # TODO define wich errors requires a False response
         return True
 
     def post_fetch(self):
