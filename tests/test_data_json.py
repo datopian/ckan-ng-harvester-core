@@ -119,7 +119,7 @@ def test_read_json():
     dj.fetch()
     valid = dj.validate()
     assert not valid  # it's good as JSON
-    assert 'Missing "dataset" KEY' in ', '.join(dj.errors)
+    assert 'ERROR parsing JSON' in ', '.join(dj.errors)
 
 
 @pytest.mark.vcr()
