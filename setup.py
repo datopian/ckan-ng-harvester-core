@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
      name='ckan-harvesters',
-     version='0.118',
+     version='0.119',
      license='MIT',
      author="Datopian",
      author_email="contact@datopian.com",
