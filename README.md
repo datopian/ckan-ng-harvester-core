@@ -18,7 +18,7 @@ try:
 except Exception as e:
 	print(e)
 
-valid = dj.validate()
+valid = dj.validate(validator_schema='non-federal-v1.1')
 print(dj.errors)
 # ['Error validating JsonSchema: \'bureauCode\' is a required property ...
 

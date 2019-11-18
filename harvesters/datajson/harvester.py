@@ -15,14 +15,6 @@ import rfc3987 as rfc3987_url
 from slugify import slugify
 from validate_email import validate_email
 
-from harvesters.datajson.validator_constants import (ACCRUAL_PERIODICITY_VALUES, BUREAU_CODE_URL,
-                                      IANA_MIME_REGEX, ISO8601_REGEX, ISSUED_REGEX,
-                                      LANGUAGE_REGEX, MODIFIED_REGEX_1,
-                                      MODIFIED_REGEX_2, MODIFIED_REGEX_3,
-                                      PRIMARY_IT_INVESTMENT_UII_REGEX,
-                                      PROGRAM_CODE_REGEX, REDACTED_REGEX,
-                                      TEMPORAL_REGEX_1, TEMPORAL_REGEX_2,
-                                      TEMPORAL_REGEX_3)
 from harvesters.logs import logger
 from harvesters.harvester import HarvesterBaseSource
 
@@ -117,7 +109,7 @@ class DataJSON(HarvesterBaseSource):
             try:
                 jss.validate(instance=self.data_json, schema=schema)
             except Exception as e:
-                error = "Catalog: {}. Error validating: {} with schema {}".format(e, schema)
+                error = "Error validating catalog: {} with schema {}".format(e, schema)
                 self.errors.append(error)
                 return False
 
@@ -188,11 +180,13 @@ class DataJSONDataset:
     def __init__(self, dataset):
         assert type(dataset) == dict
         self.data = dataset  # a dict
+        self.bureau_code_url = "https://project-open-data.cio.gov/data/omb_bureau_codes.csv"
+         
         
         self.errors = []
         self.omb_burueau_codes = set()
         # Constant URL is safe from protocol scheme abuse (bandit B310)
-        self.ftpstream = urllib.request.urlopen(BUREAU_CODE_URL) #nosec
+        self.ftpstream = urllib.request.urlopen(self.bureau_code_url) #nosec
         self.csvfile = csv.DictReader(codecs.iterdecode(self.ftpstream, 'utf-8'))
         for row in self.csvfile:
             self.omb_burueau_codes.add(row["Agency Code"] + ":" + row["Bureau Code"])
@@ -229,7 +223,7 @@ class DataJSONDataset:
         if item.get('bureauCode', None) is not None:
             for bc in item["bureauCode"]:
                 if bc not in self.omb_burueau_codes:
-                    error = f'The bureau code {bc} was not found in our list at {BUREAU_CODE_URL}'
+                    error = f'The bureau code {bc} was not found in our list at {self.bureau_code_url}'
                     self.errors.append(error)
                     return False
         

@@ -101,7 +101,7 @@ def test_load_from_url():
 
     dj.url = f'{base_url}/bad.json'
     dj.fetch()  # URL exists but it's a bad JSON, do not fails, it's downloadable (OK)
-    valid = dj.validate()
+    valid = dj.validate(validator_schema='non-federal-v1.1')
     assert not valid
 
 
@@ -112,12 +112,12 @@ def test_read_json():
     dj.url = f'{base_url}/bad.json'
     dj.fetch()
 
-    valid = dj.validate()
+    valid = dj.validate(validator_schema='non-federal-v1.1')
     assert not valid  # bad json
 
     dj.url = f'{base_url}/good-but-not-data.json'
     dj.fetch()
-    valid = dj.validate()
+    valid = dj.validate(validator_schema='non-federal-v1.1')
     assert not valid  # it's good as JSON
     assert 'ERROR parsing JSON' in ', '.join(dj.errors)
 
@@ -130,7 +130,7 @@ def test_validate_json1():
     dj.url = f'{base_url}/good-but-not-data.json'
     dj.fetch()
     
-    valid = dj.validate()
+    valid = dj.validate(validator_schema='non-federal-v1.1')
     assert not valid  # no schema
 
 
@@ -140,7 +140,7 @@ def test_validate_json2():
     dj = DataJSON()
     dj.url = f'{base_url}/usda.gov.data.json'
     dj.fetch()
-    valid = dj.validate()
+    valid = dj.validate(validator_schema='non-federal-v1.1')
     assert valid  # schema works without errors
     assert dj.errors == []
 
@@ -151,7 +151,7 @@ def test_validate_json3():
     dj = DataJSON()
     dj.url = f'{base_url}/healthdata.gov.data.json'
     dj.fetch()
-    valid = dj.validate()
+    valid = dj.validate(validator_schema='non-federal-v1.1')
     assert len(dj.errors) == 1
 
 
@@ -160,7 +160,7 @@ def test_load_from_data_json_object():
     # test loading a data.json dict
     dj = DataJSON()
     dj.read_dict_data_json(data_json_dict=test_original_datajson_datasets)
-    valid = dj.validate()
+    valid = dj.validate(validator_schema='non-federal-v1.1')
     dj.post_fetch()
     
     for dataset in dj.datasets:
@@ -168,18 +168,3 @@ def test_load_from_data_json_object():
             assert dataset['is_collection'] == True
         if dataset['identifier'] == 'USDA-26522':
             assert dataset['collection_pkg_id'] == ''
-
-
-@pytest.mark.vcr()
-def test_catalog_extras():
-    dj = DataJSON()
-    dj.url = f'{base_url}/usda.gov.data.json'
-    dj.fetch()
-    valid = dj.validate()
-    dj.post_fetch()
-    print(dj.catalog_extras)
-    assert dj.catalog_extras['catalog_@context'] == 'https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld'
-    assert 'catalog_@id' not in dj.catalog_extras
-    assert dj.catalog_extras['catalog_conformsTo'] == 'https://project-open-data.cio.gov/v1.1/schema'
-    assert dj.catalog_extras['catalog_describedBy'] == 'https://project-open-data.cio.gov/v1.1/schema/catalog.json'
-
