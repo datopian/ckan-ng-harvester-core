@@ -619,7 +619,7 @@ class CKANPortalAPI:
                 res = self.create_organization(organization=organization)
                 owner_org_id = organization['name']
 
-                config = external_harvest_source['config']
+                config = external_harvest_source.get('config', {})
                 # res = self.delete_package(name)
                 logger.info(external_harvest_source)
                 res = self.create_harvest_source(title=external_harvest_source['title'],
