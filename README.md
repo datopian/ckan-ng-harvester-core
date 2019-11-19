@@ -18,7 +18,7 @@ try:
 except Exception as e:
 	print(e)
 
-valid = dj.validate()
+valid = dj.validate(validator_schema='non-federal-v1.1')
 print(dj.errors)
 # ['Error validating JsonSchema: \'bureauCode\' is a required property ...
 
@@ -120,6 +120,12 @@ To actually hit the internet without use mocks, disable the plugin
 
 ```
 pytest --disable-vcr
+```
+
+In order to read from these *cassettes* just run as following: 
+
+```
+pytest --vcr-record=none
 ```
 
 Tests without a CKAN instance

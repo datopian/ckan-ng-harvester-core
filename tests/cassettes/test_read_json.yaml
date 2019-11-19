@@ -143,4 +143,148 @@ interactions:
     status:
       code: 200
       message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: https://datopian.gitlab.io/ckan-ng-harvest/bad.json
+  response:
+    body:
+      string: "{\n    \"bad\": \"json\",\n    LALALALA\n}"
+    headers:
+      Accept-Ranges:
+      - bytes
+      Cache-Control:
+      - max-age=600
+      Content-Length:
+      - '35'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 19 Nov 2019 13:42:45 GMT
+      Expires:
+      - Tue, 19 Nov 2019 13:52:45 UTC
+      Last-Modified:
+      - Fri, 06 Sep 2019 16:22:46 GMT
+      Vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: https://datopian.gitlab.io/ckan-ng-harvest/good-but-not-data.json
+  response:
+    body:
+      string: "{\n    \"good\": \"json\"\n}"
+    headers:
+      Accept-Ranges:
+      - bytes
+      Cache-Control:
+      - max-age=600
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 19 Nov 2019 13:42:46 GMT
+      Expires:
+      - Tue, 19 Nov 2019 13:52:46 UTC
+      Last-Modified:
+      - Fri, 06 Sep 2019 16:22:46 GMT
+      Vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: https://datopian.gitlab.io/ckan-ng-harvest/bad.json
+  response:
+    body:
+      string: "{\n    \"bad\": \"json\",\n    LALALALA\n}"
+    headers:
+      Accept-Ranges:
+      - bytes
+      Cache-Control:
+      - max-age=600
+      Content-Length:
+      - '35'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 19 Nov 2019 13:45:23 GMT
+      Expires:
+      - Tue, 19 Nov 2019 13:55:23 UTC
+      Last-Modified:
+      - Fri, 06 Sep 2019 16:22:46 GMT
+      Vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: https://datopian.gitlab.io/ckan-ng-harvest/good-but-not-data.json
+  response:
+    body:
+      string: "{\n    \"good\": \"json\"\n}"
+    headers:
+      Accept-Ranges:
+      - bytes
+      Cache-Control:
+      - max-age=600
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 19 Nov 2019 13:45:23 GMT
+      Expires:
+      - Tue, 19 Nov 2019 13:55:23 UTC
+      Last-Modified:
+      - Fri, 06 Sep 2019 16:22:46 GMT
+      Vary:
+      - Origin
+    status:
+      code: 200
+      message: OK
 version: 1

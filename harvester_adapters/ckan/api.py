@@ -62,20 +62,6 @@ class CKANPortalAPI:
 
             params = {'start': start, 'rows': rows}  # , 'sort': sort}
             if harvest_source_id is not None:
-                # you can't search by any extras
-                # https://github.com/ckan/ckan/blob/30ca7aae2f2aca6a19a2e6ed29148f8428e25c86/ckan/logic/action/get.py#L1852
-                # params['ext_harvest_source_id'] = harvest_source_id
-                # params['ext_harvest_ng_source_id'] = harvest_source_id
-                # params['extras'] = {'ext_harvest_ng_source_id': harvest_source_id}
-                # params['q'] = f'harvest_source_id:{harvest_source_id}'
-
-                # ---------------
-                # this must work
-                # ---------------
-                # https://github.com/ckan/ckanext-harvest/blob/3a72337f1e619bf9ea3221037ca86615ec22ae2f/ckanext/harvest/helpers.py#L38
-                # params['fq'] = f'+harvest_source_id:"{harvest_source_id}"'
-                # but is not working. For some reason exta harvest_source_id doesn't exists
-
                 # our new extra is working
                 params['fq'] = f'+harvest_ng_source_id:"{harvest_source_id}"'
 
@@ -334,6 +320,7 @@ class CKANPortalAPI:
 
     def create_harvest_source(self, title, url, owner_org_id, name=None,
                               notes='',
+                              config={},
                               source_type='datajson',
                               frequency='MANUAL',
                               on_duplicated='DELETE'):
@@ -367,7 +354,7 @@ class CKANPortalAPI:
                 "state": "active",
                 "active": True,
                 "tags": [{'name': 'harvest source'}],
-                "config": None,
+                "config": config,
                 "extras": [
                     # {'key': 'harvest_source_type', 'value': real_source_type}
                     ]
@@ -632,12 +619,14 @@ class CKANPortalAPI:
                 res = self.create_organization(organization=organization)
                 owner_org_id = organization['name']
 
+                config = external_harvest_source['config']
                 # res = self.delete_package(name)
                 logger.info(external_harvest_source)
                 res = self.create_harvest_source(title=external_harvest_source['title'],
                                                 url=external_harvest_source['url'],
                                                 owner_org_id=owner_org_id,
                                                 name=name,
+                                                config=config,
                                                 notes=external_harvest_source['notes'],
                                                 source_type=source_type,
                                                 frequency=external_harvest_source['frequency'],
