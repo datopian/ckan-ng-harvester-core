@@ -122,6 +122,12 @@ To actually hit the internet without use mocks, disable the plugin
 pytest --disable-vcr
 ```
 
+In order to read from these *cassettes* just run as following: 
+
+```
+pytest --vcr-record=none
+```
+
 Tests without a CKAN instance
 
 ```

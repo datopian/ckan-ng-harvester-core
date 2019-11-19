@@ -1,5 +1,5 @@
 import pytest
-from harvesters.datajson.harvester import DataJSON
+from harvesters.datajson.harvester import DataJSON, DataJSONDataset
 
 base_url = 'https://datopian.gitlab.io/ckan-ng-harvest'
 
@@ -170,5 +170,41 @@ def test_load_from_data_json_object():
     for dataset in dj.datasets:
         if dataset['identifier'] == 'USDA-26521':
             assert dataset['is_collection'] == True
+            ds = DataJSONDataset(dataset=dataset)
+            ret = ds.validate(validator_schema='non-federal-v1.1')
+            print(ds.errors)
+            assert ds.errors == []
+            assert ret
         if dataset['identifier'] == 'USDA-26522':
             assert dataset['collection_pkg_id'] == ''
+            ds = DataJSONDataset(dataset=dataset)
+            ret = ds.validate(validator_schema='non-federal-v1.1')
+            print(ds.errors)
+            assert ds.errors == []
+            assert ret
+
+
+@pytest.mark.vcr()
+def test_federal_resource():
+    # test loading a data.json dict
+    dj = DataJSON()
+    dj.read_dict_data_json(data_json_dict=test_original_datajson_datasets)
+    valid = dj.validate(validator_schema='federal-v1.1')
+    dj.post_fetch()
+    
+    assert len(dj.datasets) == 2
+    for dataset in dj.datasets:
+        if dataset['identifier'] == 'USDA-26521':
+            assert dataset['is_collection'] == True
+            ds = DataJSONDataset(dataset=dataset)
+            ret = ds.validate(validator_schema='federal-v1.1')
+            print(ds.errors)
+            assert ds.errors == []
+            assert ret
+        if dataset['identifier'] == 'USDA-26522':
+            assert dataset['collection_pkg_id'] == ''
+            ds = DataJSONDataset(dataset=dataset)
+            ret = ds.validate(validator_schema='federal-v1.1')
+            print(ds.errors)
+            assert 'The bureau code 005:41 was not found' in ', '.join(ds.errors)
+            assert not ret

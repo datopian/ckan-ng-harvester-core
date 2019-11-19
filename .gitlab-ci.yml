@@ -14,7 +14,7 @@ test:
     - pip3 install -r requirements.txt
     - echo '***************************'
     - echo 'Testing package'
-    - python -m pytest tests/
+    - python -m pytest --vcr-record=none tests/
     - echo '***************************'
     - echo 'Static security scan--pipeline will fail on medium/high severity'
     - bandit -c bandit.yml -ll -r .

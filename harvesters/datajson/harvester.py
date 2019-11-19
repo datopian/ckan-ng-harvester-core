@@ -181,7 +181,6 @@ class DataJSONDataset:
         assert type(dataset) == dict
         self.data = dataset  # a dict
         self.bureau_code_url = "https://project-open-data.cio.gov/data/omb_bureau_codes.csv"
-         
         
         self.errors = []
         self.omb_burueau_codes = set()
@@ -200,20 +199,19 @@ class DataJSONDataset:
         dataset_schema = os.path.join(schemas_folder, 'dataset.json')
         if os.path.isfile(dataset_schema):
             f = open(dataset_schema, 'r')
-            j = json.load(f)
+            schema = json.load(f)
             
             try:
-                jss.validate(self.data, schema=dataset_schema)
+                jss.validate(self.data, schema=schema)
             except Exception as e:
-                error = "Dataset: {}. Error validating: {}. Schema {}".format(self.data,
-                                                                              e,
-                                                                              dataset_schema)
+                error = "Error validating dataset: {}".format(e)
                 self.errors.append(error)
                 logger.error(error)
                 return False
         
-        if not self.validate_bureau_code():
-            return False
+        if validator_schema in ['federal-v1.1', 'federal']:
+            if not self.validate_bureau_code():
+                return False
 
         return True
 
