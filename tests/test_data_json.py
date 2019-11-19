@@ -103,6 +103,7 @@ def test_load_from_url():
     dj.fetch()  # URL exists but it's a bad JSON, do not fails, it's downloadable (OK)
     valid = dj.validate(validator_schema='non-federal-v1.1')
     assert not valid
+    assert 'ERROR parsing JSON' in ', '.join(dj.errors)
 
 
 @pytest.mark.vcr()
@@ -132,6 +133,7 @@ def test_validate_json1():
     
     valid = dj.validate(validator_schema='non-federal-v1.1')
     assert not valid  # no schema
+    assert 'Error validating catalog:' in ', '.join(dj.errors)
 
 
 @pytest.mark.vcr()
@@ -153,6 +155,7 @@ def test_validate_json3():
     dj.fetch()
     valid = dj.validate(validator_schema='non-federal-v1.1')
     assert len(dj.errors) == 1
+    assert 'Error validating catalog:' in ', '.join(dj.errors)
 
 
 @pytest.mark.vcr()
@@ -163,6 +166,7 @@ def test_load_from_data_json_object():
     valid = dj.validate(validator_schema='non-federal-v1.1')
     dj.post_fetch()
     
+    assert len(dj.datasets) == 2
     for dataset in dj.datasets:
         if dataset['identifier'] == 'USDA-26521':
             assert dataset['is_collection'] == True
