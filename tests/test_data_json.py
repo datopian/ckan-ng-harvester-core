@@ -208,3 +208,11 @@ def test_federal_resource():
             print(ds.errors)
             assert 'The bureau code 005:41 was not found' in ', '.join(ds.errors)
             assert not ret
+
+
+def test_unknown_validator_schema():
+    dj = DataJSON()
+    dj.read_dict_data_json(data_json_dict=test_original_datajson_datasets)
+
+    with pytest.raises(Exception):
+        valid = dj.validate(validator_schema='bad validator schema')
