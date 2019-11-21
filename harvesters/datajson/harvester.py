@@ -18,7 +18,11 @@ from validate_email import validate_email
 from harvesters.logs import logger
 from harvesters.harvester import HarvesterBaseSource
 
-VALID_DATAJOSN_SCHEMAS = ['federal-v1.1', 'non-federal-v1.1']
+# valid schema to analyze
+VALID_DATAJSON_SCHEMAS = {
+    'federal-v1.1': '1.1', 
+    'non-federal-v1.1': '1.1'
+    }
 
 
 class DataJSON(HarvesterBaseSource):
@@ -77,8 +81,11 @@ class DataJSON(HarvesterBaseSource):
                 /catalog.json: definition for full data.json 
                 /dataset.json: definition for each dataset
             """
-        if validator_schema not in VALID_DATAJOSN_SCHEMAS:
+        if validator_schema not in VALID_DATAJSON_SCHEMAS:
             raise Exception(f'Unknown validator_schema {validator_schema}')
+        
+        self.schema_version = VALID_DATAJSON_SCHEMAS[validator_schema]
+        
         try:
             self.data_json = json.loads(self.raw_data_json)  # check for encoding errors
         except Exception as e:
@@ -99,6 +106,7 @@ class DataJSON(HarvesterBaseSource):
             logger.error(error)
             return False
 
+        # validate with json schema
         schemas_folder = os.path.join(os.path.dirname(__file__),
                                                       'validation',
                                                       'schemas',
