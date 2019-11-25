@@ -104,6 +104,7 @@ def test_load_from_url():
     valid = dj.validate(validator_schema='non-federal-v1.1')
     assert not valid
     assert 'ERROR parsing JSON' in ', '.join(dj.errors)
+    assert dj.schema_version == '1.1'
 
 
 @pytest.mark.vcr()
@@ -165,6 +166,7 @@ def test_load_from_data_json_object():
     dj.read_dict_data_json(data_json_dict=test_original_datajson_datasets)
     valid = dj.validate(validator_schema='non-federal-v1.1')
     dj.post_fetch()
+    assert dj.headers['schema_version'] == '1.1'
     
     assert len(dj.datasets) == 2
     for dataset in dj.datasets:
