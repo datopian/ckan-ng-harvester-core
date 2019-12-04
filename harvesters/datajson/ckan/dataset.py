@@ -1,6 +1,7 @@
 import json
 from slugify import slugify
 from harvesters.logs import logger
+from harvesters.helpers import clean_tags
 from harvesters.datajson.ckan.resource import DataJSONDistribution
 from harvester_adapters.ckan import settings as ckan_settings
 from harvester_adapters.ckan.dataset import CKANDatasetAdapter
@@ -195,7 +196,9 @@ class DataJSONSchema1_1(CKANDatasetAdapter):
             return None
 
         datajson_dataset = self.original_dataset
-        self.ckan_dataset['tag_string'] = ','.join(datajson_dataset.get('keyword', []))
+        tags = datajson_dataset.get('keyword', [])
+        cleaned_tags = clean_tags(tags)
+        self.ckan_dataset['tag_string'] = ','.join(cleaned_tags)
 
         # previous transformations at origin
         for old_field, field_ckan in self.mapped_fields.items():

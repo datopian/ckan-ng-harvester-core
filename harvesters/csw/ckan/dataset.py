@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 from harvester_adapters.ckan.dataset import CKANDatasetAdapter
 from harvesters.csw.ckan.resource import CSWResource
 from harvesters.logs import logger
+from harvesters.helpers import clean_tags
 from harvester_adapters.ckan import settings as ckan_settings
 
 
@@ -151,8 +152,9 @@ class CSWDataset(CKANDatasetAdapter):
             raise Exception(f'Error validating origin dataset: {error}')
 
         dataset = self.original_dataset.get('iso_values', {})
-        tags = dataset.get('tags', ['no tags'])
-        self.ckan_dataset['tag_string'] = ','.join(tags)
+        tags = dataset.get('tags', [])
+        cleaned_tags = clean_tags(tags)
+        self.ckan_dataset['tag_string'] = ','.join(cleaned_tags)
 
         # previous transformations at origin
         for old_field, field_ckan in self.mapped_fields.items():
