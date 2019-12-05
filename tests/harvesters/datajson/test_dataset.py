@@ -54,12 +54,23 @@ class TestDataJSONDataset(object):
       djsumd = DataJSONSchema1_1(original_dataset=test_datajson_dataset, schema='usmetadata')
       djsumd.ckan_owner_org_id = 'XXXXX' 
 
-      djsumd.transform_to_ckan_dataset()
+      fields = djsumd.fix_fields('tags', ['FOB', 'wholesale market'])
+      assert fields == [{'name': 'fob'}, {'name': 'wholesale-market'}]
 
-      #TODO tags field
-      #TODO extras__bureauCode & extras__programCode fields
-      #TODO test accrual_periodicity field
-      assert djsumd.ckan_dataset['contact_email'] == 'Fred.Teensma@ams.usda.gov'
+      fields = djsumd.fix_fields('contact_email', 'mailto:Fred.Teensma@ams.usda.gov')
+      assert fields == 'Fred.Teensma@ams.usda.gov'
+
+      fields = djsumd.fix_fields('maintainer_email', 'mailto:Fred.Teensma@ams.usda.gov')
+      assert fields == 'Fred.Teensma@ams.usda.gov'
+
+      fields = djsumd.fix_fields('extras__bureauCode', ['list', 'items'])
+      assert fields == 'list,items'
+
+      fields = djsumd.fix_fields('extras__programCode', ['list', 'items'])
+      assert fields == 'list,items'
+
+      fields = djsumd.fix_fields('accrual_periodicity', 'irregular')
+      assert fields == 'not updated'
     
     def test_infer_resources(self, test_datajson_dataset):
       del test_datajson_dataset['distribution']
