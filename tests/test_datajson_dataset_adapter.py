@@ -3,52 +3,9 @@ from harvesters.datajson.ckan.dataset import DataJSONSchema1_1
 
 class TestCKANDatasetAdapter(object):
 
-    test_datajson_dataset = {
-            "identifier": "USDA-26521",
-            "accessLevel": "public",
-            "contactPoint": {
-                "hasEmail": "mailto:Fred.Teensma@ams.usda.gov",
-                "@type": "vcard:Contact",
-                "fn": "Fred Teensma"
-                },
-            "programCode": ["005:047"],
-            "description": "Some notes ...",
-            "title": "Fruit and Vegetable Market News Search",
-            "distribution": [
-                {
-                "@type": "dcat:Distribution",
-                "downloadURL": "http://marketnews.usda.gov/",
-                "mediaType": "text/html",
-                "title": "Web Page"
-                },
-                {
-                "@type": "dcat:Distribution",
-                "downloadURL": "http://www.usda.gov/digitalstrategy/costsavings.json",
-                "describedBy": "https://management.cio.gov/schemaexamples/costSavingsAvoidanceSchema.json",
-                "mediaType": "application/json",
-                "conformsTo": "https://management.cio.gov/schema/",
-                "describedByType": "application/json"
-                }
-            ],
-            "license": "https://creativecommons.org/licenses/by/4.0",
-            "bureauCode": ["005:45"],
-            "modified": "2014-12-23",
-            "publisher": {
-                "@type": "org:Organization",
-                "name": "Agricultural Marketing Service"
-                },
-            "keyword": ["FOB", "wholesale market"],
-            "headers": {
-            "@type": "dcat:Catalog",
-            "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json",
-            "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
-            "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld"
-            }
-        }
+    def test_datajson_1_1_to_ckan(self, test_datajson_dataset):
 
-    def test_datajson_1_1_to_ckan(self):
-
-        djss = DataJSONSchema1_1(original_dataset=self.test_datajson_dataset)
+        djss = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
         # ORG is required!
         djss.ckan_owner_org_id = 'XXXX'
 
@@ -80,7 +37,7 @@ class TestCKANDatasetAdapter(object):
         assert [] == [extra['value'] for extra in ckan_dataset['extras'] if extra['key'] == 'publisher_hierarchy']
 
         # test publisher subOrganizationOf
-        t2 = self.test_datajson_dataset
+        t2 = test_datajson_dataset
         t2['publisher']['subOrganizationOf'] = {
                         "@type": "org:Organization",
                         "name": "Department of Agriculture"
@@ -109,20 +66,20 @@ class TestCKANDatasetAdapter(object):
 
         assert ['USA GOV > Department of Agriculture > Agricultural Marketing Service'] == [extra['value'] for extra in ckan_dataset['extras'] if extra['key'] == 'publisher_hierarchy']
 
-        t2 = self.test_datajson_dataset
+        t2 = test_datajson_dataset
         t2['harvest_source_id'] = 'XXXXX'
 
         djss.original_dataset = t2
         ckan_dataset = djss.transform_to_ckan_dataset()
         assert ['XXXXX'] == [extra['value'] for extra in ckan_dataset['extras'] if extra['key'] == 'harvest_source_id']
 
-    def test_collections(self):
-        djss = DataJSONSchema1_1(original_dataset=self.test_datajson_dataset, schema='usmetadata')
+    def test_collections(self, test_datajson_dataset):
+        djss = DataJSONSchema1_1(original_dataset=test_datajson_dataset, schema='usmetadata')
         # ORG is required!
         djss.ckan_owner_org_id = 'XXXX'
         ckan_dataset = djss.transform_to_ckan_dataset()
         assert [] == [extra['value'] for extra in ckan_dataset['extras'] if extra['key'] == 'is_collection']
-        t2 = self.test_datajson_dataset
+        t2 = test_datajson_dataset
         t2['is_collection'] = True
         djss.original_dataset = t2
         ckan_dataset = djss.transform_to_ckan_dataset()
@@ -134,13 +91,13 @@ class TestCKANDatasetAdapter(object):
         ckan_dataset = djss.transform_to_ckan_dataset()
         assert ['XXXXX'] == [extra['value'] for extra in ckan_dataset['extras'] if extra['key'] == 'collection_package_id']
 
-    def test_catalog_extras(self):
-        djss = DataJSONSchema1_1(original_dataset=self.test_datajson_dataset, schema='usmetadata')
+    def test_catalog_extras(self, test_datajson_dataset):
+        djss = DataJSONSchema1_1(original_dataset=test_datajson_dataset, schema='usmetadata')
         # ORG is required!
         djss.ckan_owner_org_id = 'XXXX'
         ckan_dataset = djss.transform_to_ckan_dataset()
 
-        t2 = self.test_datajson_dataset
+        t2 = test_datajson_dataset
         t2['catalog_@context'] = "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld"
         t2['catalog_describedBy']  = "https://project-open-data.cio.gov/v1.1/schema/catalog.json"
         t2['catalog_conformsTo'] = "https://project-open-data.cio.gov/v1.1/schema"
@@ -153,9 +110,9 @@ class TestCKANDatasetAdapter(object):
         assert ["https://project-open-data.cio.gov/v1.1/schema"] == [extra['value'] for extra in ckan_dataset['extras'] if extra['key'] == 'catalog_conformsTo']
         assert ['https://healthdata.gov/data.json'] == [extra['value'] for extra in ckan_dataset['extras'] if extra['key'] == 'catalog_@id']
 
-    def test_required_fields(self):
+    def test_required_fields(self, test_datajson_dataset):
 
-        dataset = self.test_datajson_dataset
+        dataset = test_datajson_dataset
         # drop required keys
         djss = DataJSONSchema1_1(original_dataset=dataset, schema='usmetadata')
         # ORG is required!
@@ -172,8 +129,8 @@ class TestCKANDatasetAdapter(object):
         assert not ret
         assert '"name" is a required field' in djss.errors
 
-    def test_resources(self):
-        djss = DataJSONSchema1_1(original_dataset=self.test_datajson_dataset, schema='usmetadata')
+    def test_resources(self, test_datajson_dataset):
+        djss = DataJSONSchema1_1(original_dataset=test_datajson_dataset, schema='usmetadata')
         # ORG is required!
         djss.ckan_owner_org_id = 'XXXX'
 
@@ -257,9 +214,9 @@ class TestCKANDatasetAdapter(object):
             else:
                 assert 'Unexpected URL' == False
 
-    def test_drop_distribution(self):
+    def test_drop_distribution(self, test_datajson_dataset):
 
-        dataset = self.test_datajson_dataset
+        dataset = test_datajson_dataset
         # drop required keys
         djss = DataJSONSchema1_1(original_dataset=dataset, schema='usmetadata')
         djss.ckan_owner_org_id = 'XXXX'
