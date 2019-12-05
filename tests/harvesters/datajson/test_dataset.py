@@ -88,7 +88,26 @@ class TestDataJSONDataset(object):
 
       assert distribution == [{'accessURL': 'http://urlwithspaces.com', 'format': 'distribution format', 'mimetype': 'distribution format'}, {'webService': 'http://webService.com', 'format': 'distribution format', 'mimetype': 'distribution format'}]
 
-    def test_transform_resources(self):
+    def test_transform_resources(self, test_datajson_dataset):
+      djsumd = DataJSONSchema1_1(original_dataset=test_datajson_dataset, schema='usmetadata')
+      djsumd.ckan_owner_org_id = 'XXXXX'
+
+      assert test_datajson_dataset['distribution'][0] == {'@type': 'dcat:Distribution',
+                                                          'downloadURL': 'http://marketnews.usda.gov/',
+                                                          'mediaType': 'text/html',
+                                                          'title': 'Web Page'}
+      # test that method will convert dictionary to list by passing dictionary
+      result = djsumd.transform_resources(test_datajson_dataset['distribution'][0])
+      assert result == [{'url': 'http://marketnews.usda.gov/',
+                         'description': '',
+                         'format': 'text/html',
+                         'name': 'Web Page',
+                         'mimetype': 'text/html'}]
+
+    def test_validate_origin_distribution(self):
+      pass
+
+    def test_transform_to_ckan_resource(self):
       pass
 
     def test_transform_to_ckan_dataset(self, test_datajson_dataset):
