@@ -104,14 +104,10 @@ class TestDataJSONDataset(object):
                          'name': 'Web Page',
                          'mimetype': 'text/html'}]
 
-    def test_validate_origin_distribution(self):
-      pass
-
-    def test_transform_to_ckan_resource(self):
-      pass
-
     def test_transform_to_ckan_dataset(self, test_datajson_dataset):
       pass
 
     def test_merge_resources(self):
       pass
+    
+    
