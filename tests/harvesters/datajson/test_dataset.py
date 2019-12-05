@@ -38,7 +38,9 @@ class TestDataJSONDataset(object):
       djsumd = DataJSONSchema1_1(original_dataset=test_datajson_dataset, schema='usmetadata')
       djsumd.ckan_owner_org_id = 'XXXXX' 
 
-      djsumd.transform_to_ckan_dataset()
+      valid = djsumd.validate_origin_dataset()
+
+      assert valid == False
 
       # accessLevel does not error because it is added in the load_default_values method
       assert djsumd.errors == ['"identifier" field could not be empty at origin dataset', 
