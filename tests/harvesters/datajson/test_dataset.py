@@ -61,8 +61,19 @@ class TestDataJSONDataset(object):
       #TODO test accrual_periodicity field
       assert djsumd.ckan_dataset['contact_email'] == 'Fred.Teensma@ams.usda.gov'
     
-    def test_infer_resources(self):
-      pass
+    def test_infer_resources(self, test_datajson_dataset):
+      del test_datajson_dataset['distribution']
+      djsumd = DataJSONSchema1_1(original_dataset=test_datajson_dataset, schema='usmetadata')
+      djsumd.ckan_owner_org_id = 'XXXXX'
+
+      djsumd.original_dataset['accessURL'] = "http://urlwithspaces.com  "
+      #TODO check why we transform webService if its not used
+      djsumd.original_dataset['webService'] = "http://webService.com  "
+      djsumd.original_dataset['format'] = "distribution format"
+
+      distribution = djsumd.infer_resources()
+
+      assert distribution == [{'accessURL': 'http://urlwithspaces.com', 'format': 'distribution format', 'mimetype': 'distribution format'}, {'webService': 'http://webService.com', 'format': 'distribution format', 'mimetype': 'distribution format'}]
 
     def test_transform_resources(self):
       pass
