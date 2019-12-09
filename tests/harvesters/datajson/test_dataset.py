@@ -24,7 +24,8 @@ class TestDataJSONDataset(object):
 
     def test_validate_origin_dataset(self, test_datajson_dataset):
       djs = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
-      djs.transform_to_ckan_dataset()
+      valid = djs.validate_origin_dataset()
+      assert valid == False
       assert djs.errors == ['Owner organization ID is required']
 
       del test_datajson_dataset['accessLevel']
@@ -104,9 +105,57 @@ class TestDataJSONDataset(object):
                          'name': 'Web Page',
                          'mimetype': 'text/html'}]
 
-    def test_transform_to_ckan_dataset(self, test_datajson_dataset):
-      pass
+    def test_transform_to_ckan_dataset(self, test_datajson_dataset, caplog):
+      djs = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
+      result = djs.transform_to_ckan_dataset()
 
-    def test_merge_resources(self):
-      pass
+      assert 'Transforming data.json dataset USDA-26521' in caplog.text
+      assert result == None
+
+      djs.ckan_owner_org_id = 'XXXXX'
+      result = djs.transform_to_ckan_dataset(existing_resources=[{'url': 'http://marketnews.usda.gov/', 'id': '1'}])
+
+      assert 'Dataset transformed USDA-26521 OK' in caplog.text
+      assert result == {'name': 'fruit-and-vegetable-market-news-search',
+                        'title': 'Fruit and Vegetable Market News Search',
+                        'owner_org': 'XXXXX',
+                        'private': False,
+                        'maintainer': 'Fred Teensma',
+                        'maintainer_email': 'Fred.Teensma@ams.usda.gov',
+                        'notes': 'Some notes ...',
+                        'state': 'active',
+                        'resources': [{'url': 'http://marketnews.usda.gov/',
+                                       'description': '',
+                                       'format': 'text/html',
+                                       'name': 'Web Page',
+                                       'mimetype': 'text/html',
+                                       'id': '1'},
+                                       {'url': 'http://www.usda.gov/digitalstrategy/costsavings.json',
+                                       'description': '',
+                                       'format': 'application/json',
+                                       'mimetype': 'application/json',
+                                       'conformsTo': 'https://management.cio.gov/schema/',
+                                       'describedBy': 'https://management.cio.gov/schemaexamples/costSavingsAvoidanceSchema.json',
+                                       'describedByType': 'application/json'}],
+                        'tags': [{'name': 'fob'},
+                                 {'name': 'wholesale-market'}],
+                        'extras': [{'key': 'resource-type', 'value': 'Dataset'},
+                                   {'key': 'modified', 'value': '2014-12-23'},
+                                   {'key': 'identifier', 'value': 'USDA-26521'},
+                                   {'key': 'accessLevel', 'value': ''},
+                                   {'key': 'bureauCode', 'value': '005:45'},
+                                   {'key': 'programCode', 'value': '005:047'},
+                                   {'key': 'license', 'value': 'https://creativecommons.org/licenses/by/4.0'},
+                                   {'key': 'source_datajson_identifier', 'value': True},
+                                   {'key': 'publisher', 'value': 'Agricultural Marketing Service'}],
+                        'tag_string': 'FOB,wholesale market', 'license_id': 'cc-by'}
+
+    def test_merge_resources(self, test_datajson_dataset):
+      djs = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
+      djs.ckan_owner_org_id = 'XXXXX'
+      existing_resources = [{'url': 'http://marketnews.usda.gov/', 'id': '4'}]
+      new_resources = [{'url': 'http://marketnews.usda.gov/', 'description': '', 'format': 'text/html', 'name': 'Web Page', 'mimetype': 'text/html'}]
+      result = djs.merge_resources(existing_resources=existing_resources, new_resources=new_resources)
+
+      assert result == [{'url': 'http://marketnews.usda.gov/', 'description': '', 'format': 'text/html', 'name': 'Web Page', 'mimetype': 'text/html', 'id': '4'}]
     
