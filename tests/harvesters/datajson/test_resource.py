@@ -21,7 +21,16 @@ class TestDataJSONResource(object):
     assert result == (False, 'You need "downloadURL" or "accessURL" to conform a final url')
 
   def test_validate_final_resource(self):
-    pass
+    ckan_resource = {'url': 'has a url'}
+    cra = DataJSONDistribution(original_resource=ckan_resource)
+    result = cra.validate_final_resource(ckan_resource)
+    result == (True, None)
+
+    ckan_resource = {}
+    cra = DataJSONDistribution(original_resource=ckan_resource)
+    result = cra.validate_final_resource(ckan_resource)
+    result == (False, 'url is a required field')
+
 
   def test_transform_to_ckan_resource(self):
     pass
