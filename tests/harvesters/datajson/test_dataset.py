@@ -109,13 +109,16 @@ class TestDataJSONDataset(object):
       djs = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
       result = djs.transform_to_ckan_dataset()
 
-      assert 'Transforming data.json dataset USDA-26521' in caplog.text
       assert result == None
 
       djs.ckan_owner_org_id = 'XXXXX'
       result = djs.transform_to_ckan_dataset(existing_resources=[{'url': 'http://marketnews.usda.gov/', 'id': '1'}])
 
+      assert 'Transforming data.json dataset USDA-26521' in caplog.text
       assert 'Dataset transformed USDA-26521 OK' in caplog.text
+      assert 'Connecting fields "name", "name"' in caplog.text
+      assert 'No data in origin for "name"' in caplog.text
+      assert 'Connected OK fields "title"="Fruit and Vegetable Market News Search"' in caplog.text
       assert result == {'name': 'fruit-and-vegetable-market-news-search',
                         'title': 'Fruit and Vegetable Market News Search',
                         'owner_org': 'XXXXX',
