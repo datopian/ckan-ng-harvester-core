@@ -34,19 +34,36 @@ class TestDataJSONResource(object):
   def test_transform_to_ckan_resource(self):
     original_resource = {'@type': 'dcat:Distribution',
                          'accessURL': 'http://marketnews.usda.gov/    ',
+                         'downloadURL': 'http://marketnews.usda.gov/    ',
                          'mediaType': 'text/html',
-                         'title': 'Web Page'}
+                         'title': 'Web Page',
+                         'conformsTo': ''}
     cra = DataJSONDistribution(original_resource=original_resource)
     resource_transformed = cra.transform_to_ckan_resource()
-    assert resource_transformed == {'url': 'http://marketnews.usda.gov/', 'description': '', 'format': 'text/html', 'name': 'Web Page', 'mimetype': 'text/html'}
+    assert resource_transformed == {'url': 'http://marketnews.usda.gov/',
+                                    'accessURL': 'http://marketnews.usda.gov/',
+                                    'description': '',
+                                    'format': 'text/html',
+                                    'name': 'Web Page',
+                                    'mimetype': 'text/html'}
 
     original_resource2 = {'@type': 'dcat:Distribution',
                          'downloadURL': 'http://marketnews.usda.gov/    ',
                          'mediaType': 'text/html',
-                         'title': 'Web Page'}
+                         'title': 'Web Page',
+                         'conformsTo': 'something',
+                         'describedBy': 'something',
+                         'describedByType': 'something'}
     cra = DataJSONDistribution(original_resource=original_resource2)
     resource_transformed = cra.transform_to_ckan_resource()
-    assert resource_transformed == {'url': 'http://marketnews.usda.gov/', 'description': '', 'format': 'text/html', 'name': 'Web Page', 'mimetype': 'text/html'}
+    assert resource_transformed == {'url': 'http://marketnews.usda.gov/',
+                                    'description': '',
+                                    'format': 'text/html',
+                                    'name': 'Web Page',
+                                    'mimetype': 'text/html',
+                                    'conformsTo': 'something',
+                                    'describedBy': 'something',
+                                    'describedByType': 'something'}
 
     cra = DataJSONDistribution(original_resource={})
     with pytest.raises(Exception) as e:
