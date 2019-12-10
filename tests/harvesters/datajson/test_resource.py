@@ -1,5 +1,4 @@
 import pytest
-import pytest
 from harvesters.datajson.ckan.resource import DataJSONDistribution
 
 class TestDataJSONResource(object):
@@ -33,4 +32,23 @@ class TestDataJSONResource(object):
 
 
   def test_transform_to_ckan_resource(self):
-    pass
+    original_resource = {'@type': 'dcat:Distribution',
+                         'accessURL': 'http://marketnews.usda.gov/    ',
+                         'mediaType': 'text/html',
+                         'title': 'Web Page'}
+    cra = DataJSONDistribution(original_resource=original_resource)
+    resource_transformed = cra.transform_to_ckan_resource()
+    assert resource_transformed == {'url': 'http://marketnews.usda.gov/', 'description': '', 'format': 'text/html', 'name': 'Web Page', 'mimetype': 'text/html'}
+
+    original_resource2 = {'@type': 'dcat:Distribution',
+                         'downloadURL': 'http://marketnews.usda.gov/    ',
+                         'mediaType': 'text/html',
+                         'title': 'Web Page'}
+    cra = DataJSONDistribution(original_resource=original_resource2)
+    resource_transformed = cra.transform_to_ckan_resource()
+    assert resource_transformed == {'url': 'http://marketnews.usda.gov/', 'description': '', 'format': 'text/html', 'name': 'Web Page', 'mimetype': 'text/html'}
+
+    cra = DataJSONDistribution(original_resource={})
+    with pytest.raises(Exception) as e:
+        assert cra.transform_to_ckan_resource()
+    assert str(e.value) == 'Error validating origin resource/distribution: You need "downloadURL" or "accessURL" to conform a final url'
