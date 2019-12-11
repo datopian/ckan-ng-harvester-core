@@ -259,6 +259,13 @@ class CKANPortalAPI:
         """ POST to CKAN API to create a new package/dataset
             ckan_package is just a python dict
             https://docs.ckan.org/en/2.8/api/#ckan.logic.action.create.package_create
+            Params:
+             - ckan_package: a dict with with a ready-to-save package
+             - on_duplicated (str): action to take where the package already exists:
+               + RAISE: raise an error
+               + SKIP: return
+                    returns {'success': True}
+               + DELETE: remove the package and try to create again
         """
         url = '{}{}'.format(self.base_url, self.package_create_url)
         headers = self.get_request_headers(include_api_key=True)
