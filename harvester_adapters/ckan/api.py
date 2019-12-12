@@ -263,8 +263,8 @@ class CKANPortalAPI:
              - ckan_package: a dict with with a ready-to-save package
              - on_duplicated (str): action to take where the package already exists:
                + RAISE: raise an error
-               + SKIP: return
-                    returns {'success': True}
+               + SKIP: returns show_package results
+                    
                + DELETE: remove the package and try to create again
         """
         url = '{}{}'.format(self.base_url, self.package_create_url)
@@ -294,10 +294,14 @@ class CKANPortalAPI:
             # another posible [error] = {'owner_org': ['Organization does not exist']}
 
             # Check for duplicates
-            if json_content['error'].get('name', None) == ["That URL is already in use."]:
-                logger.error(f'Package Already exists! ACTION: {on_duplicated}')
+            dataset_exists = "That URL is already in use" in json_content['error'].get('name', '')
+            harvest_exists = "There already is a Harvest Source for this URL" in json_content['error'].get('url', '')
+            is_duplicated = dataset_exists or harvest_exists
+            if is_duplicated:
+                logger.error(f'Already exists! ACTION: {on_duplicated}')
                 if on_duplicated == 'SKIP':
-                    return {'success': True}
+                    # returns {'success': True, 'result': {the package}}
+                    return self.show_package(ckan_package_id_or_name=ckan_package['name'])
                 elif on_duplicated == 'DELETE':
                     delr = self.delete_package(ckan_package_id_or_name=ckan_package['name'])
                     if not delr['success']:
