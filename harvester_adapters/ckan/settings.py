@@ -1,7 +1,9 @@
 import os
 
 MAX_NAME_LENGTH = 100
+MIN_TAG_NAME_LENGTH = 2
 MAX_TAG_NAME_LENGTH = 100
+
 
 # Previous harvester uses this list statically
 # check if we need dynamically from

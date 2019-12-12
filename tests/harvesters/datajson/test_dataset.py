@@ -151,7 +151,7 @@ class TestDataJSONDataset(object):
                                    {'key': 'license', 'value': 'https://creativecommons.org/licenses/by/4.0'},
                                    {'key': 'source_datajson_identifier', 'value': True},
                                    {'key': 'publisher', 'value': 'Agricultural Marketing Service'}],
-                        'tag_string': 'FOB,wholesale market', 'license_id': 'cc-by'}
+                        'tag_string': 'fob,wholesale-market', 'license_id': 'cc-by'}
 
     def test_merge_resources(self, test_datajson_dataset):
       djs = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
