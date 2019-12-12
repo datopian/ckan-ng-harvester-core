@@ -4,12 +4,9 @@ from harvesters.datajson.ckan.dataset import DataJSONSchema1_1
 
 class TestDataJSONDataset(object):
 
-    def test_get_field_mapping(self, test_datajson_dataset, datajson_mapped_fields, datajson_usmetadata_mapped_fields):
+    def test_get_field_mapping(self, test_datajson_dataset, datajson_mapped_fields):
         djs = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
         assert djs.mapped_fields == datajson_mapped_fields
-
-        djs_usmetadata = DataJSONSchema1_1(original_dataset=test_datajson_dataset, schema='usmetadata')
-        assert djs_usmetadata.mapped_fields == datajson_usmetadata_mapped_fields
 
     def test_load_default_values(self, test_datajson_dataset):
         djs = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
@@ -21,6 +18,11 @@ class TestDataJSONDataset(object):
         del test_datajson_dataset['accessLevel']
         djs_usmetadata = DataJSONSchema1_1(original_dataset=test_datajson_dataset, schema='usmetadata')
         assert djs_usmetadata.original_dataset['accessLevel'] == 'public'
+
+    def test_upgrade_usmetadata_default_fields(self, test_datajson_dataset, datajson_usmetadata_mapped_fields):
+      djs = DataJSONSchema1_1(original_dataset=test_datajson_dataset, schema='usmetadata')
+      usmetadata_default_fields = djs.upgrade_usmetadata_default_fields(djs.mapped_fields)
+      assert usmetadata_default_fields == datajson_usmetadata_mapped_fields
 
     def test_validate_origin_dataset(self, test_datajson_dataset):
       djs = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
