@@ -236,8 +236,12 @@ class TestCKANDatasetAdapter(object):
         datajson = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
         assert datajson.get_base_ckan_dataset(schema='usmetadata') == base_ckan_dataset_usmetadata
 
-    def test_identify_origin_element(self):
-        pass
+    def test_identify_origin_element(self, test_datajson_dataset):
+        datajson = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
+        fn = datajson.identify_origin_element('contactPoint__fn')
+        hasEmail = datajson.identify_origin_element('contactPoint__hasEmail')
+        assert fn == 'Fred Teensma'
+        assert hasEmail == 'mailto:Fred.Teensma@ams.usda.gov'
 
     def test_validate_final_dataset(self):
         pass
