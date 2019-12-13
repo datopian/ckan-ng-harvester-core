@@ -86,7 +86,7 @@ class DataJSON(HarvesterBaseSource):
         
         self.schema_version = VALID_DATAJSON_SCHEMAS[validator_schema]
         
-        # check for encoding errors only if we not started this from a dict (as we do in some tests)
+        # check to see if the original json is from a dictionary which will indicate it is a test - we only need to check for encoding errors on real harvests
         if self.raw_data_json is not None:
             try:
                 self.data_json = json.loads(self.raw_data_json)
