@@ -2,8 +2,11 @@
 Base class for all harvesters
 """
 import json
+import os
 from abc import ABC, abstractmethod
+
 from datapackage import Package, Resource
+from slugify import slugify
 
 
 class HarvesterBaseSource(ABC):
@@ -70,5 +73,3 @@ class HarvesterBaseSource(ABC):
             package.add_resource(descriptor=resource.descriptor)
             package_path = os.path.join(folder_path, f'pkg_data_json_{idf}.zip')
             package.save(target=package_path)
-
-
