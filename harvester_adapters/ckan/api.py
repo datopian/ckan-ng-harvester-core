@@ -294,14 +294,20 @@ class CKANPortalAPI:
             # another posible [error] = {'owner_org': ['Organization does not exist']}
 
             # Check for duplicates
-            dataset_exists = "That URL is already in use" in json_content['error'].get('name', '')
-            harvest_exists = "There already is a Harvest Source for this URL" in json_content['error'].get('url', '')
+            name_errors = json_content['error']['url'] if 'name' in json_content['error'] else []    
+            dataset_exists =len([ne for ne in name_errors if "That URL is already in use" in ne]) > 0
+            
+            url_errors = json_content['error']['url'] if 'url' in json_content['error'] else []    
+            harvest_exists =len([ue for ue in url_errors if "There already is a Harvest Source for this URL" in ue]) > 0
+
             is_duplicated = dataset_exists or harvest_exists
             if is_duplicated:
                 logger.error(f'Already exists! ACTION: {on_duplicated}')
                 if on_duplicated == 'SKIP':
                     # returns {'success': True, 'result': {the package}}
-                    return self.show_package(ckan_package_id_or_name=ckan_package['name'])
+                    res = self.show_package(ckan_package_id_or_name=ckan_package['name'])
+                    logger.info(f'Skipped: {res}')
+                    return res
                 elif on_duplicated == 'DELETE':
                     delr = self.delete_package(ckan_package_id_or_name=ckan_package['name'])
                     if not delr['success']:
@@ -327,6 +333,7 @@ class CKANPortalAPI:
             error = 'API response failed: {}'.format(json_content.get('error', None))
             logger.error(error)
 
+        logger.info(f'Harvest source created: {json_content}')
         return json_content
 
     def create_harvest_source(self, title, url, owner_org_id, name=None,
@@ -460,9 +467,9 @@ class CKANPortalAPI:
         """ GET to CKAN API to show a package/dataset """
 
         url = '{}{}'.format(self.base_url, self.package_show_url)
-        headers = self.get_request_headers()
+        headers = self.get_request_headers(include_api_key=True)
         data = {'id': ckan_package_id_or_name}
-        logger.info(f'POST {url} headers:{headers} data:{data}')
+        logger.info(f'GET {url} headers:{headers} data:{data}')
         try:
             req = requests.get(url, params=data, headers=headers)
         except Exception as e:
