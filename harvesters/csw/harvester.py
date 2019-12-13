@@ -202,7 +202,8 @@ class CSWSource(HarvesterBaseSource):
                 gm2 = mdtree.find('MI_Metadata')
 
             if gm is None:
-                error = f'Unable to find MD_Metadata. \n\n: \t{str_xml[:150]} \n\n mdtree.root: {mdtree.tag} tg:"{tg}"'
+                # removed undefined tg:"{tg}"
+                error = f'Unable to find MD_Metadata. \n\n: \t{str_xml[:150]} \n\n mdtree.root: {mdtree.tag}'
                 raise Exception(error)
         try:
             res = xet.tostring(gm)
