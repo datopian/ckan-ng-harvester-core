@@ -27,7 +27,7 @@ test:
 deploy_to_pypi:
   stage: deploy
   script:
-    - pip install twine
+    - pip install twine wheel
     - python setup.py sdist bdist_wheel
     - twine upload --verbose dist/*
   only:
