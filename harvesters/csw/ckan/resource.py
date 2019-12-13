@@ -1,8 +1,10 @@
+import datetime
 import json
-import requests
 import mimetypes
-from slugify import slugify
+
+import requests
 from owslib import wms
+from slugify import slugify
 
 from harvester_adapters.ckan.resource import CKANResourceAdapter
 from harvesters.logs import logger
