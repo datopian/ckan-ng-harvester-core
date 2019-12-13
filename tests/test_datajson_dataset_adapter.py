@@ -228,3 +228,34 @@ class TestCKANDatasetAdapter(object):
         ckan_dataset = djss.transform_to_ckan_dataset()
 
         assert ckan_dataset['resources'] == []
+
+    def test_get_base_ckan_dataset(self, test_datajson_dataset, base_ckan_dataset, base_ckan_dataset_usmetadata):
+        datajson = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
+        assert datajson.get_base_ckan_dataset(schema='default') == base_ckan_dataset
+
+        datajson = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
+        assert datajson.get_base_ckan_dataset(schema='usmetadata') == base_ckan_dataset_usmetadata
+
+    def test_identify_origin_element(self):
+        pass
+
+    def test_validate_final_dataset(self):
+        pass
+
+    def test_set_destination_element(self):
+        pass
+
+    def test_build_tags(self):
+        pass
+
+    def test_set_extra(self):
+        pass
+
+    def test_get_extra(self):
+        pass
+
+    def test_generate_name(self):
+        pass
+
+    def test_get_accrual_periodicity(self):
+        pass

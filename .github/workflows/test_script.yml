@@ -1,4 +1,4 @@
-name: Python application
+name: Lint and Pytest Script
 
 on: [push]
 
