@@ -155,6 +155,7 @@ def test_validate_json3():
     dj.url = f'{base_url}/healthdata.gov.data.json'
     dj.fetch()
     valid = dj.validate(validator_schema='non-federal-v1.1')
+    assert not valid
     assert len(dj.errors) == 1
     assert 'Error validating catalog:' in ', '.join(dj.errors)
 
@@ -165,6 +166,7 @@ def test_load_from_data_json_object():
     dj = DataJSON()
     dj.read_dict_data_json(data_json_dict=test_original_datajson_datasets)
     valid = dj.validate(validator_schema='non-federal-v1.1')
+    assert valid
     dj.post_fetch()
     assert dj.headers['schema_version'] == '1.1'
     

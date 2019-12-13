@@ -86,13 +86,15 @@ class DataJSON(HarvesterBaseSource):
         
         self.schema_version = VALID_DATAJSON_SCHEMAS[validator_schema]
         
-        try:
-            self.data_json = json.loads(self.raw_data_json)  # check for encoding errors
-        except Exception as e:
-            error = 'ERROR parsing JSON: {}. Data: {}'.format(e, self.raw_data_json)
-            self.errors.append(error)
-            logger.error(error)
-            return False
+        # check to see if the original json is from a dictionary which will indicate it is a test - we only need to check for encoding errors on real harvests
+        if self.raw_data_json is not None:
+            try:
+                self.data_json = json.loads(self.raw_data_json)
+            except Exception as e:
+                error = 'ERROR parsing JSON: {}. Data: {}'.format(e, self.raw_data_json)
+                self.errors.append(error)
+                logger.error(error)
+                return False
             
         error = None
 
