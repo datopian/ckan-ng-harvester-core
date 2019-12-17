@@ -51,9 +51,8 @@ class DataJSONSchema1_1(CKANDatasetAdapter):
             'systemOfRecords': 'extras__systemOfRecords',
             # 'distribution': 'resources'  # transformed with a custom adapter
 
-            'harvest_ng_source_title': 'extras__harvest_source_title',
-            'harvest_ng_source_id': 'extras__harvest_source_id',
-
+            'harvest_ng_source_title': 'extras__harvest_ng_source_title',
+            'harvest_ng_source_id': 'extras__harvest_ng_source_id',
             'harvest_source_title': 'extras__harvest_source_title',
             'harvest_source_id': 'extras__harvest_source_id',
             'source_schema_version': 'extras__source_schema_version',  # 1.1 or 1.0
