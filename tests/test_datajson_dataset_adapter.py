@@ -256,21 +256,13 @@ class TestCKANDatasetAdapter(object):
             assert datajson.set_destination_element(raw_field='something', new_value='A Test Value')
         assert str(e.value) == 'Not found field "something" at CKAN destination dict'
 
-
     def test_build_tags(self, test_datajson_dataset):
         datajson = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
         datajson.ckan_owner_org_id = 'XXXXX'
         result = datajson.build_tags(['A tag ', 'Another tag '])
         assert result == [{'name': 'a-tag'}, {'name': 'another-tag'}]
 
-    def test_set_extra(self):
-        pass
-
-    def test_get_extra(self):
-        pass
-
-    def test_generate_name(self):
-        pass
-
-    def test_get_accrual_periodicity(self):
-        pass
+    def test_get_accrual_periodicity(self, test_datajson_dataset):
+        datajson = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
+        result = datajson.get_accrual_periodicity('irregular', reverse=True)
+        assert result == 'not updated'
