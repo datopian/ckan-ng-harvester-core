@@ -404,7 +404,7 @@ class CKANPortalAPI:
         headers['Content-Type'] = 'application/json'
         ckan_package = json.dumps(ckan_package)
 
-        logger.error(f'POST {url} headers:{headers} data:{ckan_package}')
+        logger.info(f'POST {url} headers:{headers} data:{ckan_package}')
         try:
             req = requests.post(url, data=ckan_package, headers=headers)
         except Exception as e:

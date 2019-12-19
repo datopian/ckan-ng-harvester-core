@@ -45,8 +45,8 @@ class CSWDataset(CKANDatasetAdapter):
             'spatial-data-service-type': 'extras__spatial-data-service-type',
 
             'limitations-on-public-access': 'extras__access_constraints',
-            'harvest_ng_source_title': 'extras__harvest_source_title',
-            'harvest_ng_source_id': 'extras__harvest_source_id',
+            'harvest_ng_source_title': 'extras__harvest_ng_source_title',
+            'harvest_ng_source_id': 'extras__harvest_ng_source_id',
             'harvest_source_title': 'extras__harvest_source_title',
             'harvest_source_id': 'extras__harvest_source_id',
             'source_hash': 'extras__source_hash',
