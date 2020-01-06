@@ -16,6 +16,8 @@ after_success:
   - codecov # submit coverage
 deploy:
     provider: pypi
+    username: "$PYPI_USER"
+    password: "$PYPI_PASSWORD"
     distributions: "sdist bdist_wheel"
     on:
         tags: true
