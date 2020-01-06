@@ -1,0 +1,23 @@
+language: python
+python:
+  - 3.6
+before_install:
+  - python --version
+  - pip install -U pip
+  - pip install -U pytest
+  - pip install codecov
+install:
+  - pip install ".[test]" . # install package + test dependencies
+script: 
+    - echo '***************************'
+    - echo 'Instaling reqs'
+    - pip3 install -r requirements.txt
+    - echo '***************************'
+    - echo 'Testing package'
+    - python -m pytest --vcr-record=none tests/
+    - echo '***************************'
+    - echo 'Static security scan--pipeline will fail on medium/high severity'
+    - bandit -c bandit.yml -ll -r .
+after_success:
+  - codecov # submit coverage
+
