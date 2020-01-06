@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/datopian/ckan-ng-harvester-core.svg?branch=master)](https://travis-ci.org/datopian/ckan-ng-harvester-core)
+
 # Harvester Next Generation for CKAN
 
 ## Install
