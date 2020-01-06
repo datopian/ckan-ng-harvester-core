@@ -228,3 +228,41 @@ class TestCKANDatasetAdapter(object):
         ckan_dataset = djss.transform_to_ckan_dataset()
 
         assert ckan_dataset['resources'] == []
+
+    def test_get_base_ckan_dataset(self, test_datajson_dataset, base_ckan_dataset, base_ckan_dataset_usmetadata):
+        datajson = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
+        assert datajson.get_base_ckan_dataset(schema='default') == base_ckan_dataset
+
+        datajson = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
+        assert datajson.get_base_ckan_dataset(schema='usmetadata') == base_ckan_dataset_usmetadata
+
+    def test_identify_origin_element(self, test_datajson_dataset):
+        datajson = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
+        fn = datajson.identify_origin_element('contactPoint__fn')
+        hasEmail = datajson.identify_origin_element('contactPoint__hasEmail')
+        assert fn == 'Fred Teensma'
+        assert hasEmail == 'mailto:Fred.Teensma@ams.usda.gov'
+
+    def test_validate_final_dataset(self, test_datajson_dataset):
+        datajson = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
+        result = datajson.validate_final_dataset()
+        assert result == False
+        assert '"name" field could not be empty' in datajson.errors 
+
+    def test_set_destination_element(self, test_datajson_dataset):
+        datajson = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
+        
+        with pytest.raises(Exception) as e:
+            assert datajson.set_destination_element(raw_field='something', new_value='A Test Value')
+        assert str(e.value) == 'Not found field "something" at CKAN destination dict'
+
+    def test_build_tags(self, test_datajson_dataset):
+        datajson = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
+        datajson.ckan_owner_org_id = 'XXXXX'
+        result = datajson.build_tags(['A tag ', 'Another tag '])
+        assert result == [{'name': 'a-tag'}, {'name': 'another-tag'}]
+
+    def test_get_accrual_periodicity(self, test_datajson_dataset):
+        datajson = DataJSONSchema1_1(original_dataset=test_datajson_dataset)
+        result = datajson.get_accrual_periodicity('irregular', reverse=True)
+        assert result == 'not updated'
