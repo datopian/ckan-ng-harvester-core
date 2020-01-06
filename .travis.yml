@@ -8,16 +8,14 @@ before_install:
   - pip install codecov
 install:
   - pip install ".[test]" . # install package + test dependencies
+  - pip3 install -r requirements.txt
 script: 
-    - echo '***************************'
-    - echo 'Instaling reqs'
-    - pip3 install -r requirements.txt
-    - echo '***************************'
-    - echo 'Testing package'
     - python -m pytest --vcr-record=none tests/
-    - echo '***************************'
-    - echo 'Static security scan--pipeline will fail on medium/high severity'
     - bandit -c bandit.yml -ll -r .
 after_success:
   - codecov # submit coverage
-
+deploy:
+    provider: pypi
+    distributions: "sdist bdist_wheel"
+    on:
+        tags: true
