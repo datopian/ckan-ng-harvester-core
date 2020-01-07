@@ -6,10 +6,15 @@ before_install:
   - pip install -U pip
   - pip install -U pytest
   - pip install codecov
+  - pip install flake8
 install:
   - pip install ".[test]" . # install package + test dependencies
   - pip3 install -r requirements.txt
-script: 
+  script: 
+      # stop the build if there are Python syntax errors or undefined names
+    - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+      # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+    - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - python -m pytest --vcr-record=none tests/
     - bandit -c bandit.yml -ll -r .
 after_success:
