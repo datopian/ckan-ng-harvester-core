@@ -14,7 +14,7 @@ setuptools.setup(
      description="Harvester Next Generation Core for CKAN",
      long_description=long_description,
      long_description_content_type="text/markdown",
-     url="https://gitlab.com/datopian/ckan-ng-harvester-core",
+     url="https://github.com/datopian/ckan-ng-harvester-core",
      install_requires=[
         'python-slugify>=3.0.0',
         'requests>=2.20.0',
